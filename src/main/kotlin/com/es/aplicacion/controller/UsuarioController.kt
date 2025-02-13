@@ -63,7 +63,7 @@ class UsuarioController {
         return ResponseEntity(mapOf("token" to token), HttpStatus.CREATED)
     }
 
-    @GetMapping("/")
+    @GetMapping("/hola")
     fun prueba():ResponseEntity<String>{
         return ResponseEntity("<h1>Hola mundo cruel</h1>",HttpStatus.OK)
     }
