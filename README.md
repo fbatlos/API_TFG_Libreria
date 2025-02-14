@@ -54,4 +54,20 @@ La idea sería tener un CRUD que haga distinción de tu rol.
 ### 1º Usuario
 El usuario tendrá varias comprobaciones ya que no permitiré:  
 - Que se repita el `username` de usuario ni que te puedas registrar con el mismo `email`.  
-- La contraseña tiene que ser mayor a 5 caracteres.  
+- La contraseña tiene que ser mayor a 5 caracteres.
+
+### 2º Dirección
+Usaremos una api externa para estas validaciones: 
+- Que el `municipio` y la `provincia` existan realmente y tengan sentido.
+- Que la `calle` tenga un minimo de 6 caracteres.
+- Que el `cp` sean un minimo de 4 caracteres.
+
+### 3º Tareas
+Las tareas tendrán restricciones de logicá sobre todo.
+-El `titulo` puede no puede estar vacio.
+-El `cuerpo` puede no puede estar vacio ya que no tendría sentido tener un cuerpo sin instrucciones.
+-Podras filtrar por `fecha_pub` para para ver de forma ascendente o descendiente.
+
+
+
+
