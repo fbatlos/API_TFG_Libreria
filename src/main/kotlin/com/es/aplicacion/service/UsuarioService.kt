@@ -68,9 +68,7 @@ class UsuarioService : UserDetailsService {
         }else{
             usuarioRepository.save(Usuario(null,usuarioInsertadoDTO.username,passwordEncoder.encode(usuarioInsertadoDTO.password),usuarioInsertadoDTO.email,usuarioInsertadoDTO.rol,usuarioInsertadoDTO.direccion))
         }
-
         //Comprobar email
-
         val usuario = UsuarioDTO(
             username = usuarioInsertadoDTO.username,
             email = usuarioInsertadoDTO.email,
