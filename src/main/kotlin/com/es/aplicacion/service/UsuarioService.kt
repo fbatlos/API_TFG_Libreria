@@ -41,7 +41,7 @@ class UsuarioService : UserDetailsService {
             .build()
     }
 
-    fun insertUser(usuarioInsertadoDTO: UsuarioRegisterDTO) : UsuarioDTO? {
+    fun insertUser(usuarioInsertadoDTO: UsuarioRegisterDTO) : UsuarioDTO {
 
         // TODO: Implementar este metodo
         if (usuarioInsertadoDTO.username.isBlank() || usuarioInsertadoDTO.password.isBlank() || usuarioInsertadoDTO.email.isBlank()) {
