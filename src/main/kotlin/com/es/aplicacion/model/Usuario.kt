@@ -13,8 +13,4 @@ data class Usuario(
     val email: String,
     val roles: String? = "USER",
     val direccion: Direccion
-) {
-
-
-
-}
+)
