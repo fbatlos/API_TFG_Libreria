@@ -44,7 +44,7 @@ class UsuarioController {
 
         val authentication: Authentication
         try {
-            authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(usuarioRegisterDTO.username, usuarioRegisterDTO.username))
+            authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(usuarioRegisterDTO.username, usuarioRegisterDTO.password))
         } catch (e: AuthenticationException) {
             throw UnauthorizedException("Credenciales incorrectas")
         }

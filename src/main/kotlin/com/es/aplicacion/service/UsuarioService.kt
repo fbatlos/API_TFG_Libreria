@@ -64,7 +64,7 @@ class UsuarioService : UserDetailsService {
         if (!usuarioRepository.findByUsername(usuarioInsertadoDTO.username).isEmpty) { throw UnauthorizedException("$usuarioInsertadoDTO ya esta registrado.")}
 
         if (usuarioInsertadoDTO.rol == null){
-            usuarioRepository.save(Usuario(null,usuarioInsertadoDTO.username,passwordEncoder.encode(usuarioInsertadoDTO.password),usuarioInsertadoDTO.email,usuarioInsertadoDTO.rol,usuarioInsertadoDTO.direccion))
+            usuarioRepository.save(Usuario(null,usuarioInsertadoDTO.username,passwordEncoder.encode(usuarioInsertadoDTO.password),usuarioInsertadoDTO.email, direccion = usuarioInsertadoDTO.direccion))
         }else{
             usuarioRepository.save(Usuario(null,usuarioInsertadoDTO.username,passwordEncoder.encode(usuarioInsertadoDTO.password),usuarioInsertadoDTO.email,usuarioInsertadoDTO.rol,usuarioInsertadoDTO.direccion))
         }
