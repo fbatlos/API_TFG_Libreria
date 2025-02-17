@@ -4,6 +4,7 @@ import com.es.aplicacion.dto.LoginUsuarioDTO
 import com.es.aplicacion.dto.UsuarioDTO
 import com.es.aplicacion.dto.UsuarioRegisterDTO
 import com.es.aplicacion.error.exception.UnauthorizedException
+import com.es.aplicacion.model.AuthResponse
 import com.es.aplicacion.service.TokenService
 import com.es.aplicacion.service.UsuarioService
 import jakarta.servlet.http.HttpServletRequest
@@ -35,14 +36,23 @@ class UsuarioController {
     fun insert(
         httpRequest: HttpServletRequest,
         @RequestBody usuarioRegisterDTO: UsuarioRegisterDTO
-    ) : ResponseEntity<UsuarioDTO>?{
+    ) : ResponseEntity<AuthResponse> {
 
         // TODO: Implementar este metodo
 
         val usuario = usuarioService.insertUser(usuarioRegisterDTO)
 
+        val authentication: Authentication
+        try {
+            authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(usuarioRegisterDTO.username, usuarioRegisterDTO.username))
+        } catch (e: AuthenticationException) {
+            throw UnauthorizedException("Credenciales incorrectas")
+        }
 
-        return ResponseEntity(usuario, HttpStatus.CREATED)
+        var token = tokenService.generarToken(authentication)
+
+
+        return ResponseEntity(AuthResponse(token = token, user = usuario), HttpStatus.CREATED)
 
     }
 
