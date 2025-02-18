@@ -75,6 +75,5 @@ class UsuarioService : UserDetailsService {
             rol = usuarioInsertadoDTO.rol
         )
         return usuario
-
     }
 }
