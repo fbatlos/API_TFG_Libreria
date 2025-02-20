@@ -61,7 +61,7 @@ class UsuarioService : UserDetailsService {
 
         val municipioUser = municipios.filter { it.DMUN50 == usuarioInsertadoDTO.direccion.municipio.uppercase() }.firstOrNull() ?: throw BadRequestException("Municipios no encontrado")
 
-        if (!usuarioRepository.findByUsername(usuarioInsertadoDTO.username).isEmpty) { throw UnauthorizedException("$usuarioInsertadoDTO ya esta registrado.")}
+        if (!usuarioRepository.findByUsername(usuarioInsertadoDTO.username).isEmpty) { throw UnauthorizedException("${usuarioInsertadoDTO.username} ya esta registrado.")}
 
         if (usuarioInsertadoDTO.rol == null){
             usuarioRepository.save(Usuario(null,usuarioInsertadoDTO.username,passwordEncoder.encode(usuarioInsertadoDTO.password),usuarioInsertadoDTO.email, direccion = usuarioInsertadoDTO.direccion))
