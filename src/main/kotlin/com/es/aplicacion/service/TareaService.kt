@@ -53,7 +53,6 @@ class TareaService {
     fun deleteTarea(idTarea:ObjectId,authentication: Authentication): Boolean? {
         val tarea = tareaRepository.findById(idTarea.toString()).orElseGet { throw  BadRequestException("No hay tareas con id.") }
 
-
         if (authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN")) || tarea.username == authentication.name) {
             tareaRepository.deleteById(idTarea.toString())
             return true
