@@ -1,7 +1,10 @@
 package com.es.aplicacion.error
 
+import com.es.aplicacion.error.exception.NotFound
 import com.es.aplicacion.error.exception.UnauthorizedException
 import jakarta.servlet.http.HttpServletRequest
+import org.apache.coyote.BadRequestException
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -27,4 +30,22 @@ class APIExceptionHandler {
         e.printStackTrace()
         return ErrorRespuesta(e.message!!, request.requestURI)
     }
+
+    @ExceptionHandler(BadRequestException::class) // Las "clases" (excepciones) que se quieren controlar
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    fun handleBadRequest(request: HttpServletRequest, e: Exception) : ErrorRespuesta {
+        e.printStackTrace()
+        return ErrorRespuesta(e.message!!, request.requestURI)
+    }
+
+    @ExceptionHandler(NotFound::class) // Las "clases" (excepciones) que se quieren controlar
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    fun handleNotFoundException(request: HttpServletRequest, e: Exception) : ErrorRespuesta {
+        e.printStackTrace()
+        return ErrorRespuesta(e.message!!, request.requestURI)
+    }
+
+
 }
