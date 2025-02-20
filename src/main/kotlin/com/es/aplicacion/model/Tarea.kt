@@ -4,7 +4,6 @@ import org.bson.types.ObjectId
 import java.util.*
 
 data class Tarea(
-    var _id:ObjectId?=null,
     var titulo: String,
     var cuerpo : String,
     var username: String,
