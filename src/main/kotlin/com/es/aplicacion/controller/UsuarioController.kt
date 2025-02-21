@@ -2,6 +2,7 @@ package com.es.aplicacion.controller
 
 import com.es.aplicacion.dto.LoginUsuarioDTO
 import com.es.aplicacion.dto.UsuarioDTO
+import com.es.aplicacion.dto.UsuarioInterfazDTO
 import com.es.aplicacion.dto.UsuarioRegisterDTO
 import com.es.aplicacion.error.exception.UnauthorizedException
 import com.es.aplicacion.model.AuthResponse
@@ -52,7 +53,7 @@ class UsuarioController {
         var token = tokenService.generarToken(authentication)
 
 
-        return ResponseEntity(AuthResponse(token = token, user = usuario), HttpStatus.CREATED)
+        return ResponseEntity(AuthResponse(token = token, user = UsuarioInterfazDTO(usuario.username,usuario.rol)), HttpStatus.CREATED)
 
     }
 
