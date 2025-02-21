@@ -70,7 +70,7 @@ class UsuarioController {
         // PASAMOS A GENERAR EL TOKEN
         var token = tokenService.generarToken(authentication)
 
-        return ResponseEntity(mapOf("token" to token), HttpStatus.CREATED)
+        return ResponseEntity(mapOf("token" to token), HttpStatus.OK)
     }
 
 

@@ -4,6 +4,7 @@ import com.es.aplicacion.dto.UsuarioDTO
 import com.es.aplicacion.dto.UsuarioRegisterDTO
 import com.es.aplicacion.error.exception.BadRequest
 import com.es.aplicacion.error.exception.Conflict
+import com.es.aplicacion.error.exception.NotFound
 import com.es.aplicacion.error.exception.UnauthorizedException
 import com.es.aplicacion.model.Usuario
 import com.es.aplicacion.repository.UsuarioRepository
@@ -31,10 +32,14 @@ class UsuarioService : UserDetailsService {
 
 
     override fun loadUserByUsername(username: String?): UserDetails {
+        if (username.isNullOrBlank()) {
+            throw BadRequest("El nombre de usuario no puede estar vacío.")
+        }
+
         var usuario: Usuario = usuarioRepository
-            .findByUsername(username!!)
+            .findByUsername(username)
             .orElseThrow {
-                UnauthorizedException("$username no existente")
+                NotFound("$username no existente")
             }
 
         return User.builder()
