@@ -40,10 +40,11 @@ class TareaService {
         if (tareaInsertDTO.username != authentication.name && !authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
             println(authentication.authorities.toString())
             println(authentication.name)
+            //TODO CAMBIAR A FORBIDDEN
             throw UnauthorizedException("No estas autorizado.")
         }
 
-        val tarea = Tarea(titulo = tareaInsertDTO.titulo, cuerpo = tareaInsertDTO.cuerpo, username = tareaInsertDTO.username, fecha_pub = Date())
+        val tarea = Tarea(_id = null,titulo = tareaInsertDTO.titulo, cuerpo = tareaInsertDTO.cuerpo, username = tareaInsertDTO.username, fecha_pub = Date())
 
         tareaRepository.save(tarea)
 
