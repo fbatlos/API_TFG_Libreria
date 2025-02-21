@@ -1,5 +1,7 @@
 package com.es.aplicacion.error
 
+import com.es.aplicacion.error.exception.BadRequest
+import com.es.aplicacion.error.exception.Conflict
 import com.es.aplicacion.error.exception.NotFound
 import com.es.aplicacion.error.exception.UnauthorizedException
 import jakarta.servlet.http.HttpServletRequest
@@ -31,7 +33,7 @@ class APIExceptionHandler {
         return ErrorRespuesta(e.message!!, request.requestURI)
     }
 
-    @ExceptionHandler(BadRequestException::class) // Las "clases" (excepciones) que se quieren controlar
+    @ExceptionHandler(BadRequestException::class,BadRequest::class) // Las "clases" (excepciones) que se quieren controlar
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     fun handleBadRequest(request: HttpServletRequest, e: Exception) : ErrorRespuesta {
@@ -47,5 +49,11 @@ class APIExceptionHandler {
         return ErrorRespuesta(e.message!!, request.requestURI)
     }
 
-
+    @ExceptionHandler(Conflict::class) // Las "clases" (excepciones) que se quieren controlar
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    fun handleConflict(request: HttpServletRequest, e: Exception) : ErrorRespuesta {
+        e.printStackTrace()
+        return ErrorRespuesta(e.message!!, request.requestURI)
+    }
 }
