@@ -68,6 +68,7 @@ Las tareas tendrán restricciones de logicá sobre todo.
 -El `cuerpo` puede no puede estar vacio ya que no tendría sentido tener un cuerpo sin instrucciones.
 -Podras filtrar por `fecha_pub` para para ver de forma ascendente o descendiente.
 
-
+##Pruebas Login/Register
+https://drive.google.com/file/d/1CxVJwtg5QR0ff-aLchzrFr9mpZ9Fxy_r/view?usp=drivesdk
 
 
