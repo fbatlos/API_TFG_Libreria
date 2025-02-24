@@ -1,9 +1,6 @@
 package com.es.aplicacion.error
 
-import com.es.aplicacion.error.exception.BadRequest
-import com.es.aplicacion.error.exception.Conflict
-import com.es.aplicacion.error.exception.NotFound
-import com.es.aplicacion.error.exception.UnauthorizedException
+import com.es.aplicacion.error.exception.*
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.coyote.BadRequestException
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
@@ -53,6 +50,14 @@ class APIExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
     fun handleConflict(request: HttpServletRequest, e: Exception) : ErrorRespuesta {
+        e.printStackTrace()
+        return ErrorRespuesta(e.message!!, request.requestURI)
+    }
+
+    @ExceptionHandler(Forbidden::class) // Las "clases" (excepciones) que se quieren controlar
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    fun handleForbidden(request: HttpServletRequest, e: Exception) : ErrorRespuesta {
         e.printStackTrace()
         return ErrorRespuesta(e.message!!, request.requestURI)
     }

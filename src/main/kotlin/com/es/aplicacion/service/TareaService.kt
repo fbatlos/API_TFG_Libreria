@@ -1,6 +1,7 @@
 ﻿package com.es.aplicacion.service
 
 import com.es.aplicacion.dto.TareaInsertDTO
+import com.es.aplicacion.error.exception.Forbidden
 import com.es.aplicacion.error.exception.NotFound
 import com.es.aplicacion.error.exception.UnauthorizedException
 import com.es.aplicacion.model.Tarea
@@ -41,7 +42,7 @@ class TareaService {
             println(authentication.authorities.toString())
             println(authentication.name)
             //TODO CAMBIAR A FORBIDDEN
-            throw UnauthorizedException("No estas autorizado.")
+            throw Forbidden("No estas autorizado.")
         }
 
         val tarea = Tarea(_id = null,titulo = tareaInsertDTO.titulo, cuerpo = tareaInsertDTO.cuerpo, username = tareaInsertDTO.username, fecha_pub = Date())
@@ -58,8 +59,25 @@ class TareaService {
             tareaRepository.deleteById(idTarea.toString())
             return true
         }else{
-            throw UnauthorizedException("No estas autorizado.")
+            throw Forbidden("No estas autorizado.")
         }
+    }
+
+    fun updateTarea(tarea:Tarea,authentication: Authentication): Tarea? {
+        if (!authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN")) && tarea.username != authentication.name) {throw Forbidden("No estas autorizado.")}
+
+        val tareaExistente = tareaRepository.findById(tarea._id!!).orElse(null)
+            ?: throw NotFound("Tarea no encontrada.")
+
+
+        tareaExistente.titulo = tarea.titulo
+        tareaExistente.cuerpo = tarea.cuerpo
+        tareaExistente.fecha_pub = tarea.fecha_pub
+        tareaExistente.completada = tarea.completada
+
+
+        return tareaRepository.save(tareaExistente)
+
     }
 
 }
