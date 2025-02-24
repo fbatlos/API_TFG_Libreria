@@ -1,73 +1,136 @@
-# APP Tareas
+# Descripción APP Tareas
 
-## Descripción
+La aplicación es un gestor de tareas con todas sus funcionalidades, además de añadirle la separación de las dos entidades usuario y administrador. Consta de los siguientes documentos/colecciones:
 
-La aplicación es un gestor de tareas con todas sus funcionalidades, además de añadirle la separación de las dos entidades usuario y administrador, la cual consta de los siguientes documentos/colecciones:
+## 1. Usuario
+- **username:** `String` → Nombre del usuario.
+- **email:** `String` → Correo usado para el registro.
+- **password:** `String` → Contraseña del usuario.
+- **dirección:** `Direccion` → Dirección del usuario.
+- **roles:** `String?` → Entidad que representa a la persona registrada.
 
-### 1º Usuario
-- **username:** String → es el nombre del usuario  
-- **email:** String → es el correo usado para ser registrado  
-- **password:** String → es la contraseña del usuario  
-- **dirección:** Direccion → es la dirección del usuario  
-- **roles:** String? → es la entidad que representa la persona registrada  
+## 2. Dirección
+- **municipio:** `String`
+- **provincia:** `String`
 
-### 2º Dirección
-Todos los datos se sobreentienden en este apartado.  
-- **municipio:** String  
-- **provincia:** String  
- 
-
-### 3º Tareas
-- **titulo:** String → es el título de la tarea a realizar.  
-- **cuerpo:** String → es el cuerpo especificando la tarea.  
-- **username:** String → es el usuario al que pertenece la tarea.  
-- **fecha_pub:** Date → es el día y la hora que se publicó la tarea  
-- **completada:** Bool → estará en `true` si es completada y en `false` si no.  
+## 3. Tareas
+- **titulo:** `String` → Título de la tarea a realizar.
+- **cuerpo:** `String` → Descripción de la tarea.
+- **username:** `String` → Usuario al que pertenece la tarea.
+- **fecha_pub:** `Date` → Día y hora en que se publicó la tarea.
+- **completada:** `Boolean` → `true` si está completada, `false` si no.
 
 ---
 
-## Endpoints
+# Planteamiento de la Gestión
 
-### 1º Usuario:
-La idea sería tener un CRUD.  
+Se han creado **2 entidades DTO** para facilitar el ingreso de datos en la API.  
+- El **Login** retorna un **token**.  
+- El **Register** retorna un **AuthResponse** con el token y datos no sensibles del usuario.  
 
+---
 
-- **POST** `/login` → Se inicia sesión con MongoDB con la contraseña encriptada y retornará el token.  
-- **POST** `/register` → Se registrará dentro de MongoDB con todos los datos.
+# Endpoints a Revisar
+
+## 1. Gestión de Usuario
+- **POST `/usuarios/login`**  
+  - Recibe un `LoginUsuarioDTO`, lo compara con la BD en MongoDB y retorna un token si es válido.  
+- **POST `/usuarios/register`**  
+  - Recibe un `UsuarioRegisterDTO` y procesa los datos en la BD junto con la API externa de **GeoAPI** para la dirección.  
+
+## 2. Gestión de Tareas  
+El sistema distingue entre roles (`usuario` y `admin`):  
+
+- **GET `/tareas`** → Devuelve todas las tareas del usuario. El admin puede ver todas.  
+- **POST `/tarea`** → Crea una tarea con el `username` correspondiente. Si es admin, puede asignar tareas a otros usuarios.  
+- **PUT `/tarea`** → Actualiza la tarea asignada.  
+- **DELETE `/tarea`** → El usuario elimina sus propias tareas; el admin puede eliminar cualquier tarea.  
+
+---
+
+# Lógica de Negocio
+
+## 1. Usuario  
+Restricciones:  
+- No se permite repetir `username` ni `email`.  
+- La contraseña debe tener más de **5 caracteres**.  
+- Se compara la contraseña con su repetición.  
+
+## 2. Dirección  
+Se usa una API externa para validar:  
+- Que el **municipio** y la **provincia** existan y tengan sentido.  
+
+## 3. Tareas  
+Restricciones:  
+- El **título** no puede estar vacío.  
+- El **cuerpo** no puede estar vacío.  
+- Se puede filtrar por `fecha_pub` en orden **ascendente o descendente**.  
+- **El administrador tiene acceso total** a todas las funciones.  
+
+---
+
+# Restricciones de Seguridad
+
+### 1. Autenticación  
+- Todos los endpoints requieren **JWT**, excepto `login` y `register`.  
+
+### 2. Autorización  
+- Solo los **administradores** pueden gestionar todas las tareas.  
+- Los **usuarios** solo pueden gestionar sus propias tareas.  
+
+### 3. Validación de Datos  
+- Se validan entradas para evitar **inyecciones** y errores.  
+- Se valida el formato de **email** al registrar usuarios.  
+
+### 4. Control de Acceso  
+- Restricciones a nivel de servicio para evitar que un usuario acceda a datos ajenos.  
+
+---
+
+# Excepciones y Códigos de Estado
+
+| Código  | Descripción |
+|---------|------------|
+| **500** | INTERNAL SERVER ERROR → Error inesperado en el servidor. |
+| **400** | BAD REQUEST → Datos inválidos (ej. email mal formado). |
+| **401** | UNAUTHORIZED → No autenticado (token inválido o ausente). |
+| **403** | FORBIDDEN → Sin permisos para realizar la acción. |
+| **404** | NOT FOUND → Recurso no encontrado. |
+| **409** | CONFLICT → Conflicto en la BD (ej. usuario ya registrado). |
+
+---
+
+# Pruebas Login/Register
+
+Se realizarán pruebas con **Insomnia** y una demostración en video con la API en **Render**.
+
+## 1. Register (`POST /usuarios/register`)
+### Pruebas no válidas:
+- Intento de registro con `username` repetido.  
+- Intento de registro con `email` ya registrado.  
+- **Formato de email inválido**.  
+- **Campos vacíos**.  
+- **Contraseñas no coinciden**.  
+- **Municipio inexistente o ilógico**.  
+- **Provincia inexistente**.  
+
+### Prueba válida:  
+- Registro exitoso, se retorna el **token** y datos no sensibles.  
+
+---
+
+## 2. Login (`POST /usuarios/login`)
+### Pruebas no válidas:
+- Usuario o contraseña incorrectos.  
+
+### Pruebas válidas:
+- Credenciales correctas, se obtiene el **token**.  
+
+---
+
+# Prueba con Interfaz  
+Se ejecuta en **Render**, repitiendo las pruebas anteriores.  
+
+**Video demostrativo**:  
+🔗 [Ver video en Google Drive](https://drive.google.com/file/d/1CxVJwtg5QR0ff-aLchzrFr9mpZ9Fxy_r/view?usp=sharing)  
   
-- **PUT** `/usuario` → El propio usuario podrá actualizar sus datos cuando quiera. 
-- **DELETE** `/usuario` → El propio usuario podrá eliminar su cuenta y el admin podrá eliminar la que quiera.  
-
-### 2º Tareas:
-La idea sería tener un CRUD que haga distinción de tu rol.  
-
-- **GET** `/tareas` → Obtenemos todas las tareas del usuario y el admin puede ver todas.  
-- **POST** `/tarea` → Insertamos una tarea con el `username` del usuario correspondiente o, si es admin, pediremos el nombre del usuario a asignar esa tarea.  
-- **PUT** `/tarea` → Actualizará la tarea asignada.  
-- **DELETE** `/tarea` → El usuario eliminará sus tareas y el admin podrá eliminar todas las tareas.  
-
----
-
-## Lógica de negocio
-
-### 1º Usuario
-El usuario tendrá varias comprobaciones ya que no permitiré:  
-- Que se repita el `username` de usuario ni que te puedas registrar con el mismo `email`.  
-- La contraseña tiene que ser mayor a 5 caracteres.
-
-### 2º Dirección
-Usaremos una api externa para estas validaciones: 
-- Que el `municipio` y la `provincia` existan realmente y tengan sentido.
-- Que la `calle` tenga un minimo de 6 caracteres.
-- Que el `cp` sean un minimo de 4 caracteres.
-
-### 3º Tareas
-Las tareas tendrán restricciones de logicá sobre todo.
--El `titulo` puede no puede estar vacio.
--El `cuerpo` puede no puede estar vacio ya que no tendría sentido tener un cuerpo sin instrucciones.
--Podras filtrar por `fecha_pub` para para ver de forma ascendente o descendiente.
-
-## Pruebas Login/Register
-### https://drive.google.com/file/d/1CxVJwtg5QR0ff-aLchzrFr9mpZ9Fxy_r/view?usp=drivesdk
-
-
