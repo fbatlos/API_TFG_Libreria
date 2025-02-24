@@ -1,6 +1,7 @@
 ﻿package com.es.aplicacion.service
 
 import com.es.aplicacion.dto.TareaInsertDTO
+import com.es.aplicacion.error.exception.BadRequest
 import com.es.aplicacion.error.exception.Forbidden
 import com.es.aplicacion.error.exception.NotFound
 import com.es.aplicacion.error.exception.UnauthorizedException
@@ -36,7 +37,7 @@ class TareaService {
 
     fun inserirTarea(tareaInsertDTO: TareaInsertDTO,authentication: Authentication): Tarea? {
 
-        if (tareaInsertDTO.titulo.isBlank() || tareaInsertDTO.cuerpo.isBlank()) {throw BadRequestException("Requiere de un titulo y un cuerpo.")}
+        if (tareaInsertDTO.titulo.isBlank() || tareaInsertDTO.cuerpo.isBlank()) {throw BadRequest("Requiere de un titulo y un cuerpo.")}
 
         if (tareaInsertDTO.username != authentication.name && !authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
             println(authentication.authorities.toString())
@@ -53,7 +54,7 @@ class TareaService {
     }
 
     fun deleteTarea(idTarea:ObjectId,authentication: Authentication): Boolean? {
-        val tarea = tareaRepository.findById(idTarea.toString()).orElseGet { throw  BadRequestException("No hay tareas con id.") }
+        val tarea = tareaRepository.findById(idTarea.toString()).orElseGet { throw  BadRequest("No hay tareas con id.") }
 
         if (authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN")) || tarea.username == authentication.name) {
             tareaRepository.deleteById(idTarea.toString())
