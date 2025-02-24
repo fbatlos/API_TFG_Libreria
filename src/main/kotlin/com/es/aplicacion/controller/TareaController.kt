@@ -37,24 +37,26 @@ class TareaController {
         return ResponseEntity(tarea,HttpStatus.CREATED)
     }
 
-/*
+
     @PutMapping("/tarea/{id}")
     fun updateTarea(
         authentication: Authentication,
         @PathVariable("id") id: ObjectId,
-    ): ResponseEntity<TareaDTO> {
-        val nuevaTarea  = tareaService
+        @RequestBody tarea: Tarea
+    ): ResponseEntity<Tarea> {
+        val nuevaTarea  = tareaService.updateTarea(tarea,authentication)
+        return ResponseEntity(nuevaTarea,HttpStatus.OK)
     }
 
-*/
+
 
     @DeleteMapping("/tarea/{tarea_id}")
     fun deleteTarea(
         authentication: Authentication,
         @PathVariable tarea_id: ObjectId
     ): ResponseEntity<Boolean> {
-        val tarea = tareaService.deleteTarea(tarea_id,authentication)
+        tareaService.deleteTarea(tarea_id,authentication)
 
-        return ResponseEntity(tarea,HttpStatus.CREATED)
+        return ResponseEntity.noContent().build()
     }
 }
