@@ -13,11 +13,9 @@ La aplicación es un gestor de tareas con todas sus funcionalidades, además de 
 
 ### 2º Dirección
 Todos los datos se sobreentienden en este apartado.  
-- **calle:** String  
-- **num:** String  
 - **municipio:** String  
 - **provincia:** String  
-- **cp:** String  
+ 
 
 ### 3º Tareas
 - **titulo:** String → es el título de la tarea a realizar.  
@@ -33,10 +31,11 @@ Todos los datos se sobreentienden en este apartado.
 ### 1º Usuario:
 La idea sería tener un CRUD.  
 
-- **GET** `/usuario` → Obtenemos el usuario y si es admin podrá ver todos los usuarios.  
+
 - **POST** `/login` → Se inicia sesión con MongoDB con la contraseña encriptada y retornará el token.  
-- **POST** `/register` → Se registrará dentro de MongoDB con todos los datos.  
-- **PUT** `/usuario` → El propio usuario podrá actualizar sus datos cuando quiera.  
+- **POST** `/register` → Se registrará dentro de MongoDB con todos los datos.
+  
+- **PUT** `/usuario` → El propio usuario podrá actualizar sus datos cuando quiera. 
 - **DELETE** `/usuario` → El propio usuario podrá eliminar su cuenta y el admin podrá eliminar la que quiera.  
 
 ### 2º Tareas:
@@ -68,6 +67,7 @@ Las tareas tendrán restricciones de logicá sobre todo.
 -El `cuerpo` puede no puede estar vacio ya que no tendría sentido tener un cuerpo sin instrucciones.
 -Podras filtrar por `fecha_pub` para para ver de forma ascendente o descendiente.
 
-
+## Pruebas Login/Register
+### https://drive.google.com/file/d/1CxVJwtg5QR0ff-aLchzrFr9mpZ9Fxy_r/view?usp=drivesdk
 
 
