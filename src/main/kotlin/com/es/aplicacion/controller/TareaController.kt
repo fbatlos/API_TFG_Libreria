@@ -38,10 +38,9 @@ class TareaController {
     }
 
 
-    @PutMapping("/tarea/{id}")
+    @PutMapping("/tarea")
     fun updateTarea(
         authentication: Authentication,
-        @PathVariable("id") id: ObjectId,
         @RequestBody tarea: Tarea
     ): ResponseEntity<Tarea> {
         val nuevaTarea  = tareaService.updateTarea(tarea,authentication)
