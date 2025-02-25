@@ -7,6 +7,7 @@ import com.es.aplicacion.error.exception.NotFound
 import com.es.aplicacion.error.exception.UnauthorizedException
 import com.es.aplicacion.model.Tarea
 import com.es.aplicacion.repository.TareaRepository
+import com.es.aplicacion.repository.UsuarioRepository
 import org.apache.coyote.BadRequestException
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +25,9 @@ class TareaService {
     @Autowired
     private lateinit var tareaRepository: TareaRepository
 
+    @Autowired
+    private lateinit var usuarioRepository: UsuarioRepository
+
     fun getTareaByUsername(authentication: Authentication): List<Tarea> {
         if (authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
             val tareas = tareaRepository.findAll()
@@ -38,6 +42,8 @@ class TareaService {
     fun inserirTarea(tareaInsertDTO: TareaInsertDTO,authentication: Authentication): Tarea? {
 
         if (tareaInsertDTO.titulo.isBlank() || tareaInsertDTO.cuerpo.isBlank()) {throw BadRequest("Requiere de un titulo y un cuerpo.")}
+
+        usuarioRepository.findByUsername(tareaInsertDTO.username).orElseGet { throw BadRequest("El usuario no existe.") }
 
         if (tareaInsertDTO.username != authentication.name && !authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
             println(authentication.authorities.toString())
