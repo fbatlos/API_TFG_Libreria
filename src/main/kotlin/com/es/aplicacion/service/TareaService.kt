@@ -43,7 +43,7 @@ class TareaService {
 
         if (tareaInsertDTO.titulo.isBlank() || tareaInsertDTO.cuerpo.isBlank()) {throw BadRequest("Requiere de un titulo y un cuerpo.")}
 
-        usuarioRepository.findByUsername(tareaInsertDTO.username).orElseGet { throw BadRequest("El usuario no existe.") }
+        if(authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))){usuarioRepository.findByUsername(tareaInsertDTO.username).orElseGet { throw BadRequest("El usuario no existe.") }}
 
         if (tareaInsertDTO.username != authentication.name && !authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
             println(authentication.authorities.toString())
@@ -73,12 +73,17 @@ class TareaService {
     fun updateTarea(tarea:Tarea,authentication: Authentication): Tarea? {
         if (!authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN")) && tarea.username != authentication.name) {throw Forbidden("No estas autorizado.")}
 
+        if(authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))){usuarioRepository.findByUsername(tarea.username).orElseGet { throw BadRequest("El usuario no existe.") }}
+
         val tareaExistente = tareaRepository.findById(tarea._id!!).orElse(null)
             ?: throw NotFound("Tarea no encontrada.")
+
+        if (tarea.titulo.isBlank() || tarea.cuerpo.isBlank() ) {throw BadRequest("El tirulo y el cuerpo son obligatorios.")}
 
 
         tareaExistente.titulo = tarea.titulo
         tareaExistente.cuerpo = tarea.cuerpo
+        tareaExistente.username = tarea.username
         tareaExistente.fecha_pub = tarea.fecha_pub
         tareaExistente.completada = tarea.completada
 
