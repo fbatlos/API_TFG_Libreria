@@ -63,8 +63,7 @@ Se usa una API externa para validar:
 ## 3. Tareas  
 Restricciones:  
 - El **título** no puede estar vacío.  
-- El **cuerpo** no puede estar vacío.  
-- Se puede filtrar por `fecha_pub` en orden **ascendente o descendente**.  
+- El **cuerpo** no puede estar vacío.   
 - **El administrador tiene acceso total** a todas las funciones.  
 
 ---
@@ -98,15 +97,26 @@ Restricciones:
 | **404** | NOT FOUND → Recurso no encontrado. |
 | **409** | CONFLICT → Conflicto en la BD (ej. usuario ya registrado). |
 
+# Códigos de Estado Buenos
+
+| Código  | Descripción |
+|---------|------------|
+| **200** | OK → La pertición salió de forma exitosa. |
+| **201** | Created → Se usa en post, se creó sin problema en la base de datos (ej. añadir una Tarea). |
+| **204** | Not Content → Usado en delete, eliminó de la base de datos lo necesario (ej. eliminar una Tarea). |
+
 ---
 
-# Pruebas Login/Register
+# PRUEBAS GESTIÓN TAREAS
 
 Se realizarán pruebas con **Insomnia** y una demostración en video con la API en **Render**.
 
 ## 1. Register (`POST /usuarios/register`)
 ### Pruebas no válidas:
-- Intento de registro con `username` repetido.  
+- Intento de registro con `username` repetido.
+
+  ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_113519.png)
+
 - Intento de registro con `email` ya registrado.  
 - **Formato de email inválido**.  
 - **Campos vacíos**.  
