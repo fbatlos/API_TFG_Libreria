@@ -146,6 +146,11 @@ Se realizarán pruebas con **Insomnia** y una demostración en video con la API 
 
    ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_114435.png)
 
+
+### Vemos la BD
+  ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_120846.png)
+
+
 ---
 
 ## 2. Login (`POST /usuarios/login`)
@@ -163,6 +168,17 @@ Se realizarán pruebas con **Insomnia** y una demostración en video con la API 
   ![Login](imagenesPruebas/Captura_de_pantalla_2025-02-21_120724.png)
 
 ---
+
+## 3. Tareas
+  Ahora vamos a realizar las pruebas de Tareas.
+
+  Para ello necesitamos 2 tokens, el priemero de rol usuario y otro con rol administrador.
+
+  ![Tarea](imagenesPruebas/Captura_de_pantalla_2025-02-26_130255.png)
+  
+## Tareas (`GET /tareas/tareas`)
+- Obtenermos las tareas de un usuario, ya que es de rol usuario.
+  ![Tarea](imagenesPruebas/Captura_de_pantalla_2025-02-26_130348.png)
 
 # Prueba con Interfaz  
 Se ejecuta en **Render**, repitiendo las pruebas anteriores. 
