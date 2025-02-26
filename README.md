@@ -63,8 +63,7 @@ Se usa una API externa para validar:
 ## 3. Tareas  
 Restricciones:  
 - El **título** no puede estar vacío.  
-- El **cuerpo** no puede estar vacío.  
-- Se puede filtrar por `fecha_pub` en orden **ascendente o descendente**.  
+- El **cuerpo** no puede estar vacío.   
 - **El administrador tiene acceso total** a todas las funciones.  
 
 ---
