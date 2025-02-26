@@ -117,29 +117,57 @@ Se realizarán pruebas con **Insomnia** y una demostración en video con la API 
 
   ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_113519.png)
 
-- Intento de registro con `email` ya registrado.  
-- **Formato de email inválido**.  
-- **Campos vacíos**.  
-- **Contraseñas no coinciden**.  
-- **Municipio inexistente o ilógico**.  
-- **Provincia inexistente**.  
+- Intento de registro con `email` ya registrado.
+
+  ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_113731.png)
+  
+- **Formato de email inválido**.
+
+  ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_113820.png)
+  
+- **Campos vacíos**.
+
+   ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_113907.png)
+  
+- **Contraseñas no coinciden**.
+
+   ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_113948.png)
+  
+- **Municipio inexistente o ilógico**.
+
+   ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_114220.png)
+   
+- **Provincia inexistente**.
+
+   ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_114319.png)  
 
 ### Prueba válida:  
 - Registro exitoso, se retorna el **token** y datos no sensibles.  
+
+   ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_114435.png)
 
 ---
 
 ## 2. Login (`POST /usuarios/login`)
 ### Pruebas no válidas:
-- Usuario o contraseña incorrectos.  
+- Usuario o contraseña incorrectos.
+
+  ![Login](imagenesPruebas/Captura_de_pantalla_2025-02-21_120527.png)
+
+
+  ![Login](imagenesPruebas/Captura_de_pantalla_2025-02-21_120545.png)
 
 ### Pruebas válidas:
-- Credenciales correctas, se obtiene el **token**.  
+- Credenciales correctas, se obtiene el **token**.
+
+  ![Login](imagenesPruebas/Captura_de_pantalla_2025-02-21_120724.png)
 
 ---
 
 # Prueba con Interfaz  
-Se ejecuta en **Render**, repitiendo las pruebas anteriores.  
+Se ejecuta en **Render**, repitiendo las pruebas anteriores. 
+
+![Render](imagenesPruebas/Captura_de_pantalla_2025-02-21_115326.png)
 
 **Video demostrativo**:  
 🔗 [Ver video en Google Drive](https://drive.google.com/file/d/1CxVJwtg5QR0ff-aLchzrFr9mpZ9Fxy_r/view?usp=sharing)  
