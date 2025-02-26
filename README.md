@@ -115,7 +115,7 @@ Se realizarán pruebas con **Insomnia** y una demostración en video con la API 
 ### Pruebas no válidas:
 - Intento de registro con `username` repetido.
 
-  ![Register](APP_ADAT/imagenesPruebas/Captura de pantalla 2025-02-21 113519.png)
+  ![Register](imagenesPruebas/Captura_de_pantalla_2025-02-21_113519.png)
 
 - Intento de registro con `email` ya registrado.  
 - **Formato de email inválido**.  
