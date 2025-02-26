@@ -114,7 +114,9 @@ Se realizarán pruebas con **Insomnia** y una demostración en video con la API 
 ## 1. Register (`POST /usuarios/register`)
 ### Pruebas no válidas:
 - Intento de registro con `username` repetido.
-  ![Register](imagenesPruebas/Captura de pantalla 2025-02-21 113519.png)
+
+  ![Register](APP_ADAT/imagenesPruebas/Captura de pantalla 2025-02-21 113519.png)
+
 - Intento de registro con `email` ya registrado.  
 - **Formato de email inválido**.  
 - **Campos vacíos**.  
