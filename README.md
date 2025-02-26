@@ -97,6 +97,14 @@ Restricciones:
 | **404** | NOT FOUND → Recurso no encontrado. |
 | **409** | CONFLICT → Conflicto en la BD (ej. usuario ya registrado). |
 
+# Códigos de Estado Buenos
+
+| Código  | Descripción |
+|---------|------------|
+| **200** | OK → La pertición salió de forma exitosa. |
+| **201** | Created → Se usa en post, se creó sin problema en la base de datos (ej. añadir una Tarea). |
+| **204** | Not Content → Usado en delete, eliminó de la base de datos lo necesario (ej. eliminar una Tarea). |
+
 ---
 
 # Pruebas Login/Register
