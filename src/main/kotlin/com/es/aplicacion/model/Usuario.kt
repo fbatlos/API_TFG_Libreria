@@ -12,5 +12,6 @@ data class Usuario(
     val password: String,
     val email: String,
     val roles: String? = "USER",
-    val direccion: Direccion
+    val direccion: Direccion,
+    val librosfav: List<String>
 )

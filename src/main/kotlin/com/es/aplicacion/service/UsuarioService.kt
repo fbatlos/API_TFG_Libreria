@@ -80,9 +80,9 @@ class UsuarioService : UserDetailsService {
         }
 
         if (usuarioInsertadoDTO.rol == null){
-            usuarioRepository.save(Usuario(null,usuarioInsertadoDTO.username,passwordEncoder.encode(usuarioInsertadoDTO.password),usuarioInsertadoDTO.email, direccion = usuarioInsertadoDTO.direccion))
+            usuarioRepository.save(Usuario(null,usuarioInsertadoDTO.username,passwordEncoder.encode(usuarioInsertadoDTO.password),usuarioInsertadoDTO.email, direccion = usuarioInsertadoDTO.direccion , librosfav = listOf()))
         }else{
-            usuarioRepository.save(Usuario(null,usuarioInsertadoDTO.username,passwordEncoder.encode(usuarioInsertadoDTO.password),usuarioInsertadoDTO.email,usuarioInsertadoDTO.rol,usuarioInsertadoDTO.direccion))
+            usuarioRepository.save(Usuario(null,usuarioInsertadoDTO.username,passwordEncoder.encode(usuarioInsertadoDTO.password),usuarioInsertadoDTO.email,usuarioInsertadoDTO.rol,usuarioInsertadoDTO.direccion, librosfav = listOf()))
         }
         //Comprobar email
         val usuario = UsuarioDTO(
