@@ -5,20 +5,17 @@ import com.es.aplicacion.dto.UsuarioRegisterDTO
 import com.es.aplicacion.error.exception.BadRequest
 import com.es.aplicacion.error.exception.Conflict
 import com.es.aplicacion.error.exception.NotFound
-import com.es.aplicacion.error.exception.UnauthorizedException
+import com.es.aplicacion.model.Direccion
 import com.es.aplicacion.model.Usuario
 import com.es.aplicacion.repository.UsuarioRepository
 import com.es.aplicacion.util.Utils
-import org.apache.coyote.BadRequestException
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.crossstore.ChangeSetPersister
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.stereotype.Service
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class UsuarioService : UserDetailsService {
@@ -51,10 +48,7 @@ class UsuarioService : UserDetailsService {
 
     fun insertUser(usuarioInsertadoDTO: UsuarioRegisterDTO) : UsuarioDTO {
 
-        // TODO: Implementar este metodo
-
         if (usuarioInsertadoDTO.username.isBlank() || usuarioInsertadoDTO.password.isBlank() || usuarioInsertadoDTO.email.isBlank()) {
-            //Hacer la clase de error.
             throw BadRequest("Uno o más campos estan vacios.")
         }
 
@@ -66,30 +60,49 @@ class UsuarioService : UserDetailsService {
             throw BadRequest("Formato del email invalido")
         }
 
-        val provincias = apiService.obtenerDatosDesdeApi()?.data ?: throw BadRequest("Provincias no obtenidas.")
+        //Comprobamos provincias
+        val provinciaUser = (apiService.obtenerDatosDesdeApi()?.data ?: throw BadRequest("Provincias no obtenidas.")).filter { it.PRO == usuarioInsertadoDTO.direccion.provincia.uppercase() }.firstOrNull() ?: throw BadRequest("Provincia no encontrada")
 
-        val provinciaUser = provincias.filter { it.PRO == usuarioInsertadoDTO.direccion.provincia.uppercase() }.firstOrNull() ?: throw BadRequest("Provincia no encontrada")
+        //Comprobamos los municipios
+        (apiService.obtenerMunicipioDatosDesdeApi(provinciaUser.CPRO)?.data ?: throw BadRequest("Municipios no obtenidos.")).filter { it.DMUN50 == usuarioInsertadoDTO.direccion.municipio.uppercase() }.firstOrNull() ?: throw BadRequest("Municipio no encontrado")
 
-        val municipios = apiService.obtenerMunicipioDatosDesdeApi(provinciaUser.CPRO)?.data ?: throw BadRequest("Municipios no obtenidos.")
-
-        val municipioUser = municipios.filter { it.DMUN50 == usuarioInsertadoDTO.direccion.municipio.uppercase() }.firstOrNull() ?: throw BadRequest("Municipio no encontrado")
-
+        //Comprobamos que el usuario no existe
         if (!usuarioRepository.findByUsername(usuarioInsertadoDTO.username).isEmpty) { throw Conflict("${usuarioInsertadoDTO.username} ya esta registrado.")}
+        //Comprobamos que el email no existe
+        if (!usuarioRepository.findByEmail(usuarioInsertadoDTO.email).isEmpty) { throw Conflict("${usuarioInsertadoDTO.email} ya esta registrado.") }
 
-        if (!usuarioRepository.findByEmail(usuarioInsertadoDTO.email).isEmpty) { throw Conflict("${usuarioInsertadoDTO.email} ya esta registrado.")
-        }
+        usuarioRepository.save(
+            Usuario(
+                null,
+                username = usuarioInsertadoDTO.username,
+                password = passwordEncoder.encode(usuarioInsertadoDTO.password),
+                email = usuarioInsertadoDTO.email,
+                roles = usuarioInsertadoDTO.rol,
+                direccion = mutableListOf(usuarioInsertadoDTO.direccion),
+                librosfav = mutableListOf()
+            )
+        )
 
-        if (usuarioInsertadoDTO.rol == null){
-            usuarioRepository.save(Usuario(null,usuarioInsertadoDTO.username,passwordEncoder.encode(usuarioInsertadoDTO.password),usuarioInsertadoDTO.email, direccion = usuarioInsertadoDTO.direccion , librosfav = listOf()))
-        }else{
-            usuarioRepository.save(Usuario(null,usuarioInsertadoDTO.username,passwordEncoder.encode(usuarioInsertadoDTO.password),usuarioInsertadoDTO.email,usuarioInsertadoDTO.rol,usuarioInsertadoDTO.direccion, librosfav = listOf()))
-        }
-        //Comprobar email
         val usuario = UsuarioDTO(
             username = usuarioInsertadoDTO.username,
             email = usuarioInsertadoDTO.email,
             rol = usuarioInsertadoDTO.rol
         )
         return usuario
+    }
+
+    fun addDireccion(direccion: Direccion, authentication: Authentication): String {
+
+        val usuario = usuarioRepository.findByUsername(authentication.name).orElseThrow{NotFound("El usuario no encontrado")}
+
+        usuario.direccion.forEach {
+            if(it.equals(direccion) == true){throw BadRequest("Direccion ya existe en tus direcciones.")}
+        }
+
+        usuario.direccion.add(direccion)
+
+        usuarioRepository.save(usuario)
+
+        return "Se añadío con exito."
     }
 }

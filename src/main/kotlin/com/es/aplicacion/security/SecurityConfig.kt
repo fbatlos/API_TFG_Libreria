@@ -9,6 +9,7 @@ import com.nimbusds.jose.proc.SecurityContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -38,6 +39,9 @@ class SecurityConfig {
             .authorizeHttpRequests { auth -> auth
                 .requestMatchers("/usuarios/login").permitAll()
                 .requestMatchers("/usuarios/register").permitAll()
+                .requestMatchers(HttpMethod.POST,"/libros/admin/libros").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/libros/admin/libros/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/libros/admin/libros/{id}").hasRole("ADMIN")
                 .anyRequest().authenticated()
             } // Los recursos protegidos y publicos
             .oauth2ResourceServer { oauth2 -> oauth2.jwt(Customizer.withDefaults()) }

@@ -1,11 +1,11 @@
 package com.es.aplicacion.controller
 
 import com.es.aplicacion.dto.LoginUsuarioDTO
-import com.es.aplicacion.dto.UsuarioDTO
 import com.es.aplicacion.dto.UsuarioInterfazDTO
 import com.es.aplicacion.dto.UsuarioRegisterDTO
 import com.es.aplicacion.error.exception.UnauthorizedException
 import com.es.aplicacion.model.AuthResponse
+import com.es.aplicacion.model.Direccion
 import com.es.aplicacion.service.TokenService
 import com.es.aplicacion.service.UsuarioService
 import jakarta.servlet.http.HttpServletRequest
@@ -16,8 +16,8 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -72,6 +72,15 @@ class UsuarioController {
         var token = tokenService.generarToken(authentication)
 
         return ResponseEntity(mapOf("token" to token), HttpStatus.OK)
+    }
+
+
+    @PutMapping("/direccion")
+    fun addDireccion(
+        @RequestBody direccion: Direccion,
+        authentication: Authentication
+    ): ResponseEntity<String> {
+        return ResponseEntity(usuarioService.addDireccion(direccion, authentication),HttpStatus.OK)
     }
 
 
