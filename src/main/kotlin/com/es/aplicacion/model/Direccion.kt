@@ -1,5 +1,6 @@
 ﻿package com.es.aplicacion.model
 
+
 data class Direccion(
     val calle: String,
     val num: String,
