@@ -49,8 +49,7 @@ class LibroController {
     @GetMapping
     fun listarLibros(
         @RequestParam(required = false) categoria: String?,
-        @RequestParam(required = false) autor: String?,
-        authentication: Authentication
+        @RequestParam(required = false) autor: String?
     ): ResponseEntity<List<Libro>>{
         return ResponseEntity(libroService.getLibros(categoria, autor), HttpStatus.OK)
     }
