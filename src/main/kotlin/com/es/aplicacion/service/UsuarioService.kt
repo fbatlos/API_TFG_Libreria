@@ -105,4 +105,29 @@ class UsuarioService : UserDetailsService {
 
         return "Se añadío con exito."
     }
+
+    fun addFavorito(auth: Authentication, libroId: String):String {
+        val usuario = usuarioRepository.findByUsername(auth.name)
+            .orElseThrow { NotFound("Usuario ${auth.name} no existe") }
+
+        if (!usuario.librosfav.contains(libroId)) {
+            usuario.librosfav.add(libroId)
+            usuarioRepository.save(usuario)
+            return "Libro añadido con exito."
+        }
+
+        return "Libro ya es favorito."
+    }
+
+    fun removeFavorito(auth: Authentication, libroId: String):String {
+        val usuario = usuarioRepository.findByUsername(auth.name)
+        .orElseThrow { NotFound("Usuario ${auth.name} no existe") }
+
+        if (usuario.librosfav.contains(libroId)) {
+            usuario.librosfav.remove(libroId)
+            usuarioRepository.save(usuario)
+            return "Libro eliminado con exito de favoritos."
+        }
+        throw BadRequest("El libro no está en favoritos.")
+    }
 }
