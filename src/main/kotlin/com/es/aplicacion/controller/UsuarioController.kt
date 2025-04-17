@@ -16,11 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/usuarios")
@@ -81,6 +77,23 @@ class UsuarioController {
         authentication: Authentication
     ): ResponseEntity<String> {
         return ResponseEntity(usuarioService.addDireccion(direccion, authentication),HttpStatus.OK)
+    }
+
+    @PostMapping("/favoritos/{libroId}")
+    fun addFavorite(
+        @PathVariable libroId:String,
+        authentication: Authentication
+    ): ResponseEntity<String> {
+        return ResponseEntity(usuarioService.addFavorito(authentication, libroId),HttpStatus.CREATED)
+    }
+
+    @DeleteMapping("/favoritos/{libroId}")
+    fun removeFavorite(
+        @PathVariable libroId:String,
+        authentication: Authentication
+    ): ResponseEntity<String> {
+        usuarioService.removeFavorito(authentication, libroId)
+        return ResponseEntity.noContent().build()
     }
 
 
