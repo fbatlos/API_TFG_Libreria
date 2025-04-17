@@ -79,6 +79,13 @@ class UsuarioController {
         return ResponseEntity(usuarioService.addDireccion(direccion, authentication),HttpStatus.OK)
     }
 
+    @GetMapping("/favoritos")
+    fun getFavoritos(
+        authentication: Authentication
+    ):ResponseEntity<MutableList<String>>{
+        return ResponseEntity(usuarioService.getFavoritos(authentication),HttpStatus.OK)
+    }
+
     @PostMapping("/favoritos/{libroId}")
     fun addFavorite(
         @PathVariable libroId:String,
@@ -95,6 +102,8 @@ class UsuarioController {
         usuarioService.removeFavorito(authentication, libroId)
         return ResponseEntity.noContent().build()
     }
+
+
 
 
 }

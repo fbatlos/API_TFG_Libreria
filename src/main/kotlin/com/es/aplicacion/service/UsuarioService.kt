@@ -130,4 +130,11 @@ class UsuarioService : UserDetailsService {
         }
         throw BadRequest("El libro no está en favoritos.")
     }
+
+    fun getFavoritos(auth: Authentication):MutableList<String> {
+        val usuario = usuarioRepository.findByUsername(auth.name)
+        .orElseThrow { NotFound("Usuario ${auth.name} no existe") }
+
+        return usuario.librosfav
+    }
 }
