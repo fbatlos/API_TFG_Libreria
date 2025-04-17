@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document("Libros")
 data class Libro(
     @BsonId
+    val _id : String?,
     var titulo: String? = null,
     var autores: List<String> = emptyList(),
     var precio: Double? = null,
