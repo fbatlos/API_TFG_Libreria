@@ -11,6 +11,7 @@ data class Libro(
     val _id : String?,
     var titulo: String? = null,
     var autores: List<String> = emptyList(),
+    var descripcion: String? = null,
     var precio: Double? = null,
     var moneda: String? = null,
     var imagen: String? = null,
