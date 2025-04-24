@@ -8,8 +8,8 @@ import java.util.Date
 data class Valoracion(
     @BsonId
     val _id : String?,
-    val libro_id : String,
-    val usuario_id : String,
+    val libroid : String,
+    val usuarioid : String,
     val valoracion : Int,
     val comentario:String,
     val fecha : Date,
