@@ -1,7 +1,11 @@
 package com.es.aplicacion.dto
 
+import com.es.aplicacion.model.Direccion
+
 data class UsuarioDTO(
     val username: String,
     val email: String,
+    var direccion: MutableList<Direccion>,
+    val librosfav: MutableList<String> = mutableListOf(),
     val rol: String?
 )

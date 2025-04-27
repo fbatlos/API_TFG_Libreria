@@ -12,7 +12,7 @@ data class Compra(
 
 data class CompraItem(
     val libroId: String,
-    val precio: Int,
+    val precio: Double,
     val type: TipoStock
 )
 
