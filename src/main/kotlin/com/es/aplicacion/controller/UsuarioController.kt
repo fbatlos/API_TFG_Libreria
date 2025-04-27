@@ -7,6 +7,7 @@ import com.es.aplicacion.dto.UsuarioRegisterDTO
 import com.es.aplicacion.error.exception.UnauthorizedException
 import com.es.aplicacion.model.AuthResponse
 import com.es.aplicacion.model.Direccion
+import com.es.aplicacion.model.Libro
 import com.es.aplicacion.service.TokenService
 import com.es.aplicacion.service.UsuarioService
 import jakarta.servlet.http.HttpServletRequest
@@ -107,6 +108,30 @@ class UsuarioController {
         authentication: Authentication
     ): ResponseEntity<String> {
         usuarioService.removeFavorito(authentication, libroId)
+        return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/cesta")
+    fun getCesta(
+        authentication: Authentication
+    ): ResponseEntity<MutableList<Libro>> {
+        return ResponseEntity(usuarioService.getCesta(authentication),HttpStatus.OK)
+    }
+
+    @PostMapping("/cesta/{libroId}")
+    fun addLibroCesta(
+        @PathVariable libroId:String,
+        authentication: Authentication
+    ):ResponseEntity<String>{
+        return ResponseEntity(usuarioService.addLibro(authentication, libroId),HttpStatus.CREATED)
+    }
+
+    @DeleteMapping("/cesta/{libroId}")
+    fun removeLibroCesta(
+        @PathVariable libroId:String,
+        authentication: Authentication
+    ):ResponseEntity<String>{
+        usuarioService.deletaLibro(authentication, libroId)
         return ResponseEntity.noContent().build()
     }
 }

@@ -6,7 +6,9 @@ import com.es.aplicacion.error.exception.BadRequest
 import com.es.aplicacion.error.exception.Conflict
 import com.es.aplicacion.error.exception.NotFound
 import com.es.aplicacion.model.Direccion
+import com.es.aplicacion.model.Libro
 import com.es.aplicacion.model.Usuario
+import com.es.aplicacion.repository.LibroRepository
 import com.es.aplicacion.repository.UsuarioRepository
 import com.es.aplicacion.util.Utils
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,6 +24,10 @@ class UsuarioService : UserDetailsService {
 
     @Autowired
     private lateinit var usuarioRepository: UsuarioRepository
+
+    @Autowired
+    private lateinit var libroRepository: LibroRepository
+
     @Autowired
     private lateinit var passwordEncoder: PasswordEncoder
     @Autowired
@@ -150,5 +156,31 @@ class UsuarioService : UserDetailsService {
         .orElseThrow { NotFound("Usuario ${auth.name} no existe") }
 
         return usuario.librosfav
+    }
+
+    fun getCesta(auth: Authentication):MutableList<Libro> {
+        return usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("Usuario ${auth.name} no existe") }.cesta
+    }
+
+    fun addLibro(auth: Authentication, libroId: String):String {
+        val libro = libroRepository.findById(libroId).orElseThrow { NotFound("El libro no existe") }
+
+        val usuario = usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("El usuario no encontrado") }
+
+        usuario.cesta.add(libro)
+        usuarioRepository.save(usuario)
+
+        return "Añadido con exito."
+    }
+
+    fun deletaLibro(auth: Authentication, libroId: String):String {
+        val libro = libroRepository.findById(libroId).orElseThrow { NotFound("El libro no existe") }
+
+        val usuario = usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("El usuario no encontrado") }
+
+        usuario.cesta.remove(libro)
+        usuarioRepository.save(usuario)
+
+        return "Eliminado con exito."
     }
 }
