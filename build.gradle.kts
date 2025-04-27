@@ -31,6 +31,8 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+	implementation("com.stripe:stripe-java:24.24.0")
+
 	implementation("org.mongodb:mongodb-driver-kotlin-sync:5.3.0")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 }

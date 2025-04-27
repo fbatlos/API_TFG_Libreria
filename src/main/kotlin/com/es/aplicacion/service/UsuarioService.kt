@@ -86,9 +86,23 @@ class UsuarioService : UserDetailsService {
         val usuario = UsuarioDTO(
             username = usuarioInsertadoDTO.username,
             email = usuarioInsertadoDTO.email,
+            direccion = mutableListOf(usuarioInsertadoDTO.direccion),
+            librosfav = mutableListOf(),
             rol = usuarioInsertadoDTO.rol
         )
         return usuario
+    }
+
+    fun getUsuario(auth: Authentication): UsuarioDTO {
+        val usuario = usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("Usuario no encontrado.") }
+
+        return UsuarioDTO(
+            username = usuario.username,
+            email = usuario.email,
+            direccion = usuario.direccion,
+            librosfav = usuario.librosfav,
+            rol = usuario.roles
+        )
     }
 
     fun addDireccion(direccion: Direccion, authentication: Authentication): String {

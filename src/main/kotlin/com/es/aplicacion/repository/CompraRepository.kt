@@ -1,0 +1,14 @@
+﻿package com.es.aplicacion.repository
+
+import com.es.aplicacion.model.Compra
+import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.mongodb.repository.Query
+import org.springframework.stereotype.Repository
+
+@Repository
+interface CompraRepository : MongoRepository<Compra, String> {
+    fun findByUsuarioId(usuarioId: String): List<Compra>
+
+    @Query("{ 'items.libroId': ?0 }")
+    fun findPurchasesByBookId(bookId: String): List<Compra>
+}

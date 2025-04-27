@@ -1,6 +1,7 @@
 package com.es.aplicacion.controller
 
 import com.es.aplicacion.dto.LoginUsuarioDTO
+import com.es.aplicacion.dto.UsuarioDTO
 import com.es.aplicacion.dto.UsuarioInterfazDTO
 import com.es.aplicacion.dto.UsuarioRegisterDTO
 import com.es.aplicacion.error.exception.UnauthorizedException
@@ -70,6 +71,12 @@ class UsuarioController {
         return ResponseEntity(mapOf("token" to token), HttpStatus.OK)
     }
 
+    @GetMapping("/usuario")
+    fun getUsuario(
+        authentication: Authentication
+    ): ResponseEntity<UsuarioDTO>{
+        return ResponseEntity(usuarioService.getUsuario(authentication),HttpStatus.OK)
+    }
 
     @PutMapping("/direccion")
     fun addDireccion(
@@ -102,8 +109,4 @@ class UsuarioController {
         usuarioService.removeFavorito(authentication, libroId)
         return ResponseEntity.noContent().build()
     }
-
-
-
-
 }
