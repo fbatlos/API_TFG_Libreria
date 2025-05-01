@@ -45,7 +45,6 @@ class LibroController {
     }
 
 
-
     @GetMapping
     fun listarLibros(
         @RequestParam(required = false) categoria: String?,
