@@ -56,10 +56,17 @@ class LibroService {
 
 
     fun getLibros(categoria:String?,autor:String?): List<Libro> {
-        return when {
-            categoria != null || autor != null -> libroRepository.buscarPorCategoriaOAutor(categoria?:"",autor?:"").orElseThrow { NotFound("No se ha encontrado.") }
-            else -> libroRepository.findAll()
+        val libros = when {
+            categoria != null && autor != null ->
+                libroRepository.buscarPorCategoriaOAutorSimilar(categoria, autor)
+            categoria != null ->
+                libroRepository.buscarPorCategoriaSimilar(categoria)
+            autor != null ->
+                libroRepository.buscarPorAutorSimilar(autor)
+            else ->
+                libroRepository.findAll()
         }
+        return libros
     }
 
     fun buscarLibros(query: String?): List<Libro> {

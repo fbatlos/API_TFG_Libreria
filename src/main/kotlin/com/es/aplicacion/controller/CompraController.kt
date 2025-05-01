@@ -2,6 +2,7 @@
 
 import com.es.aplicacion.model.Compra
 import com.es.aplicacion.service.PaymentService
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -11,7 +12,7 @@ class PaymentController(
 ) {
 
     @PostMapping("/crear")
-    fun crearPago(@RequestBody compra: Compra): Map<String, String> {
+    fun crearPago(@RequestBody compra: Compra,authentication: Authentication): Map<String, String> {
         val paymentIntent = paymentService.crearPago(compra)
         return mapOf("clientSecret" to paymentIntent.clientSecret)
     }
