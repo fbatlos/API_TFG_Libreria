@@ -26,7 +26,7 @@ class PaymentService {
 
     fun crearCheckoutSession(compra: Compra): Session {
 
-        val lineItems = buildLineItems(compra)
+        val lineItems = compra.items.map { (libro, cantidad) -> buildSession(libro, cantidad) }
 
         val paramsBuilder = SessionCreateParams.builder()
             .setMode(SessionCreateParams.Mode.PAYMENT)
@@ -42,23 +42,19 @@ class PaymentService {
 
 }
 
-fun buildLineItems(compra: Compra): List<SessionCreateParams.LineItem> {
-    return compra.items.flatMap { item ->
-        item.map { (libro, cantidad) ->
-            SessionCreateParams.LineItem.builder()
-                .setQuantity(cantidad.toLong()) // Cantidad de veces que han comprado ese libro
-                .setPriceData(
-                    SessionCreateParams.LineItem.PriceData.builder()
-                        .setCurrency("eur")
-                        .setUnitAmount((libro.precio?.toLong() ?: 0L)) // Precio unitario
-                        .setProductData(
-                            SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                .setName(libro.titulo)
-                                .build()
-                        )
+fun buildSession(libro: Libro, cantidad: Int): SessionCreateParams.LineItem {
+    return SessionCreateParams.LineItem.builder()
+        .setQuantity(cantidad.toLong())
+        .setPriceData(
+            SessionCreateParams.LineItem.PriceData.builder()
+                .setCurrency("eur")
+                .setUnitAmount((libro.precio?.toLong() ?: 0L))
+                .setProductData(
+                    SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                        .setName(libro.titulo)
                         .build()
                 )
                 .build()
-        }
-    }
+        )
+        .build()
 }
