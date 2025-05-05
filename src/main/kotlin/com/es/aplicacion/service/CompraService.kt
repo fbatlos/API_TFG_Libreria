@@ -1,7 +1,7 @@
 ﻿package com.es.aplicacion.service
 
 import com.es.aplicacion.model.Compra
-import com.es.aplicacion.model.TipoDePago
+import com.es.aplicacion.model.Libro
 import com.stripe.model.PaymentIntent
 import com.stripe.model.checkout.Session
 import com.stripe.param.PaymentIntentCreateParams
@@ -12,44 +12,21 @@ import org.springframework.stereotype.Service
 class PaymentService {
 
     fun crearPago(compra: Compra): PaymentIntent {
-        val total = compra.items.sumOf { it.precio }
+        val total = 0.0
 
-        val paymentMethodTypes = when (compra.metodoDePago.tipo) {
-            //Mirar como sería en cada caso
-            TipoDePago.STRIPE_CARD -> listOf("card")
-            TipoDePago.GOOGLE_PAY -> listOf("card")
-            TipoDePago.APPLE_PAY -> listOf("card")
-        }
 
         val params = PaymentIntentCreateParams.builder()
             .setAmount(total.toLong())
             .setCurrency("eur")
-            .addAllPaymentMethodType(paymentMethodTypes)
-            .putMetadata("usuarioId", compra.usuarioId)
+            .putMetadata("usuario", compra.usuarioName)
             .build()
 
         return PaymentIntent.create(params)
     }
 
     fun crearCheckoutSession(compra: Compra): Session {
-        val total = compra.items.sumOf { it.precio }
 
-        val lineItems = compra.items.map { item ->
-            SessionCreateParams.LineItem.builder()
-                .setQuantity(1 )
-                .setPriceData(
-                    SessionCreateParams.LineItem.PriceData.builder()
-                        .setCurrency("eur")
-                        .setUnitAmount(item.precio.toLong())
-                        .setProductData(
-                            SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                .setName(item.libroId)
-                                .build()
-                        )
-                        .build()
-                )
-                .build()
-        }
+        val lineItems = buildLineItems(compra)
 
         val paramsBuilder = SessionCreateParams.builder()
             .setMode(SessionCreateParams.Mode.PAYMENT)
@@ -63,4 +40,25 @@ class PaymentService {
         return Session.create(params)
     }
 
+}
+
+fun buildLineItems(compra: Compra): List<SessionCreateParams.LineItem> {
+    return compra.items.flatMap { item ->
+        item.map { (libro, cantidad) ->
+            SessionCreateParams.LineItem.builder()
+                .setQuantity(cantidad.toLong()) // Cantidad de veces que han comprado ese libro
+                .setPriceData(
+                    SessionCreateParams.LineItem.PriceData.builder()
+                        .setCurrency("eur")
+                        .setUnitAmount((libro.precio?.toLong() ?: 0L)) // Precio unitario
+                        .setProductData(
+                            SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                .setName(libro.titulo)
+                                .build()
+                        )
+                        .build()
+                )
+                .build()
+        }
+    }
 }

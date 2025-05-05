@@ -18,7 +18,7 @@ class PaymentController(
     }
 
     @PostMapping("/checkout")
-    fun crearCheckoutSession(@RequestBody compra: Compra): Map<String, String> {
+    fun crearCheckoutSession(@RequestBody compra: Compra, authentication: Authentication): Map<String, String> {
         val session = paymentService.crearCheckoutSession(compra)
         return mapOf("url" to session.url)
     }
