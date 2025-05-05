@@ -16,4 +16,11 @@ class PaymentController(
         val paymentIntent = paymentService.crearPago(compra)
         return mapOf("clientSecret" to paymentIntent.clientSecret)
     }
+
+    @PostMapping("/checkout")
+    fun crearCheckoutSession(@RequestBody compra: Compra): Map<String, String> {
+        val session = paymentService.crearCheckoutSession(compra)
+        return mapOf("url" to session.url)
+    }
+
 }
