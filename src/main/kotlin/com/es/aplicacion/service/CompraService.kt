@@ -48,7 +48,7 @@ fun buildSession(libro: Libro, cantidad: Int): SessionCreateParams.LineItem {
         .setPriceData(
             SessionCreateParams.LineItem.PriceData.builder()
                 .setCurrency("eur")
-                .setUnitAmount((libro.precio?.toLong() ?: 0L))
+                .setUnitAmount((libro.precio?.times(100)?.toLong() ?: 0L))
                 .setProductData(
                     SessionCreateParams.LineItem.PriceData.ProductData.builder()
                         .setName(libro.titulo)
