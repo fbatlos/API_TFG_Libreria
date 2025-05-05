@@ -2,6 +2,7 @@
 
 import com.es.aplicacion.model.Compra
 import com.es.aplicacion.service.PaymentService
+import com.stripe.model.checkout.Session
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
@@ -20,7 +21,17 @@ class PaymentController(
     @PostMapping("/checkout")
     fun crearCheckoutSession(@RequestBody compra: Compra, authentication: Authentication): Map<String, String> {
         val session = paymentService.crearCheckoutSession(compra)
-        return mapOf("url" to session.url)
+        return mapOf(
+            "sessionId" to session.id,
+            "url" to session.url
+        )
     }
+
+    @GetMapping("/estado/{sessionId}")
+    fun obtenerEstadoPago(@PathVariable sessionId: String): Map<String, String> {
+        val session = Session.retrieve(sessionId)
+        return mapOf("status" to session.paymentStatus)
+    }
+
 
 }
