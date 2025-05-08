@@ -10,5 +10,5 @@ data class Compra(
 
 data class ItemCompra(
     val libro: Libro,
-    val cantidad: Int
+    var cantidad: Int
 )

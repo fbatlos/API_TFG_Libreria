@@ -7,6 +7,7 @@ import com.es.aplicacion.dto.UsuarioRegisterDTO
 import com.es.aplicacion.error.exception.UnauthorizedException
 import com.es.aplicacion.model.AuthResponse
 import com.es.aplicacion.model.Direccion
+import com.es.aplicacion.model.ItemCompra
 import com.es.aplicacion.model.Libro
 import com.es.aplicacion.service.TokenService
 import com.es.aplicacion.service.UsuarioService
@@ -114,24 +115,26 @@ class UsuarioController {
     @GetMapping("/cesta")
     fun getCesta(
         authentication: Authentication
-    ): ResponseEntity<MutableList<Libro>> {
+    ): ResponseEntity<MutableList<ItemCompra>> {
         return ResponseEntity(usuarioService.getCesta(authentication),HttpStatus.OK)
     }
 
-    @PostMapping("/cesta/{libroId}")
-    fun addLibroCesta(
-        @PathVariable libroId:String,
+    @PostMapping("/cesta")
+    fun addOrUpdateItemCompra(
+        @RequestBody itemCompra: ItemCompra,
         authentication: Authentication
-    ):ResponseEntity<String>{
-        return ResponseEntity(usuarioService.addLibro(authentication, libroId),HttpStatus.CREATED)
+    ): ResponseEntity<String> {
+        usuarioService.addOrUpdateItem(authentication, itemCompra)
+        return ResponseEntity.ok("Actualizado")
     }
 
     @DeleteMapping("/cesta/{libroId}")
-    fun removeLibroCesta(
-        @PathVariable libroId:String,
+    fun removeItemCompra(
+        @PathVariable libroId: String,
         authentication: Authentication
-    ):ResponseEntity<String>{
-        usuarioService.deletaLibro(authentication, libroId)
+    ): ResponseEntity<Void> {
+        usuarioService.removeItem(authentication, libroId)
         return ResponseEntity.noContent().build()
     }
+
 }
