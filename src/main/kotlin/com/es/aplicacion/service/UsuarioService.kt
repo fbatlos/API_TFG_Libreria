@@ -6,6 +6,7 @@ import com.es.aplicacion.error.exception.BadRequest
 import com.es.aplicacion.error.exception.Conflict
 import com.es.aplicacion.error.exception.NotFound
 import com.es.aplicacion.model.Direccion
+import com.es.aplicacion.model.ItemCompra
 import com.es.aplicacion.model.Libro
 import com.es.aplicacion.model.Usuario
 import com.es.aplicacion.repository.LibroRepository
@@ -107,7 +108,7 @@ class UsuarioService : UserDetailsService {
 
         val usuario = usuarioRepository.findByUsername(authentication.name).orElseThrow{NotFound("El usuario no encontrado")}
 
-        usuario.direccion?.forEach {
+        usuario.direccion.forEach {
             if(it.equals(direccion) == true){throw BadRequest("Direccion ya existe en tus direcciones.")}
         }
 
@@ -119,7 +120,7 @@ class UsuarioService : UserDetailsService {
         //Comprobamos los municipios
         (apiService.obtenerMunicipioDatosDesdeApi(provinciaUser.CPRO)?.data ?: throw BadRequest("Municipios no obtenidos.")).filter { it.DMUN50 == direccion.municipio.uppercase() }.firstOrNull() ?: throw BadRequest("Municipio no encontrado")
 
-        usuario.direccion?.add(direccion)
+        usuario.direccion.add(direccion)
 
         usuarioRepository.save(usuario)
 
@@ -158,29 +159,36 @@ class UsuarioService : UserDetailsService {
         return usuario.librosfav
     }
 
-    fun getCesta(auth: Authentication):MutableList<Libro> {
+    fun getCesta(auth: Authentication):MutableList<ItemCompra> {
         return usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("Usuario ${auth.name} no existe") }.cesta
     }
 
-    fun addLibro(auth: Authentication, libroId: String):String {
-        val libro = libroRepository.findById(libroId).orElseThrow { NotFound("El libro no existe") }
+    fun addOrUpdateItem(auth: Authentication, itemCompra:ItemCompra):String {
+        itemCompra.libro._id?.let { libroRepository.findById(it).orElseThrow { NotFound("El libro no existe") } }
 
         val usuario = usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("El usuario no encontrado") }
 
-        usuario.cesta.add(libro)
+        usuario.cesta.add(itemCompra)
         usuarioRepository.save(usuario)
 
         return "Añadido con exito."
     }
 
-    fun deletaLibro(auth: Authentication, libroId: String):String {
-        val libro = libroRepository.findById(libroId).orElseThrow { NotFound("El libro no existe") }
+    fun removeItem(auth: Authentication, libroId: String): String {
+        val usuario = usuarioRepository.findByUsername(auth.name)
+            .orElseThrow { NotFound("El usuario no encontrado") }
 
-        val usuario = usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("El usuario no encontrado") }
+        val item = usuario.cesta.find { it.libro._id == libroId }
+            ?: throw NotFound("El libro no está en la cesta")
 
-        usuario.cesta.remove(libro)
+        if (item.cantidad > 1) {
+            item.cantidad -= 1
+        } else {
+            usuario.cesta.remove(item)
+        }
+
         usuarioRepository.save(usuario)
 
-        return "Eliminado con exito."
+        return "Actualizado con éxito."
     }
 }
