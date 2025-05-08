@@ -66,12 +66,6 @@ class UsuarioService : UserDetailsService {
             throw BadRequest("Formato del email invalido")
         }
 
-        //Comprobamos provincias
-        val provinciaUser = (apiService.obtenerDatosDesdeApi()?.data ?: throw BadRequest("Provincias no obtenidas.")).filter { it.PRO == usuarioInsertadoDTO.direccion.provincia.uppercase() }.firstOrNull() ?: throw BadRequest("Provincia no encontrada")
-
-        //Comprobamos los municipios
-        (apiService.obtenerMunicipioDatosDesdeApi(provinciaUser.CPRO)?.data ?: throw BadRequest("Municipios no obtenidos.")).filter { it.DMUN50 == usuarioInsertadoDTO.direccion.municipio.uppercase() }.firstOrNull() ?: throw BadRequest("Municipio no encontrado")
-
         //Comprobamos que el usuario no existe
         if (!usuarioRepository.findByUsername(usuarioInsertadoDTO.username).isEmpty) { throw Conflict("${usuarioInsertadoDTO.username} ya esta registrado.")}
         //Comprobamos que el email no existe
@@ -84,7 +78,6 @@ class UsuarioService : UserDetailsService {
                 password = passwordEncoder.encode(usuarioInsertadoDTO.password),
                 email = usuarioInsertadoDTO.email,
                 roles = usuarioInsertadoDTO.rol,
-                direccion = mutableListOf(usuarioInsertadoDTO.direccion),
                 librosfav = mutableListOf()
             )
         )
@@ -92,7 +85,6 @@ class UsuarioService : UserDetailsService {
         val usuario = UsuarioDTO(
             username = usuarioInsertadoDTO.username,
             email = usuarioInsertadoDTO.email,
-            direccion = mutableListOf(usuarioInsertadoDTO.direccion),
             librosfav = mutableListOf(),
             rol = usuarioInsertadoDTO.rol
         )
@@ -115,11 +107,19 @@ class UsuarioService : UserDetailsService {
 
         val usuario = usuarioRepository.findByUsername(authentication.name).orElseThrow{NotFound("El usuario no encontrado")}
 
-        usuario.direccion.forEach {
+        usuario.direccion?.forEach {
             if(it.equals(direccion) == true){throw BadRequest("Direccion ya existe en tus direcciones.")}
         }
 
-        usuario.direccion.add(direccion)
+        //Comprobamos provincias
+        val provinciaUser = (apiService.obtenerDatosDesdeApi()?.data ?: throw BadRequest("Provincias no obtenidas.")).filter { it.PRO == direccion.provincia.uppercase() }.firstOrNull() ?: throw BadRequest("Provincia no encontrada")
+
+        println(provinciaUser)
+
+        //Comprobamos los municipios
+        (apiService.obtenerMunicipioDatosDesdeApi(provinciaUser.CPRO)?.data ?: throw BadRequest("Municipios no obtenidos.")).filter { it.DMUN50 == direccion.municipio.uppercase() }.firstOrNull() ?: throw BadRequest("Municipio no encontrado")
+
+        usuario.direccion?.add(direccion)
 
         usuarioRepository.save(usuario)
 
