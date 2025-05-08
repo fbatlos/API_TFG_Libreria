@@ -163,16 +163,27 @@ class UsuarioService : UserDetailsService {
         return usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("Usuario ${auth.name} no existe") }.cesta
     }
 
-    fun addOrUpdateItem(auth: Authentication, itemCompra:ItemCompra):String {
-        itemCompra.libro._id?.let { libroRepository.findById(it).orElseThrow { NotFound("El libro no existe") } }
+    fun addOrUpdateItem(auth: Authentication, itemCompra: ItemCompra): String {
+        val libro = itemCompra.libro._id?.let {
+            libroRepository.findById(it).orElseThrow { NotFound("El libro no existe") }
+        } ?: throw BadRequest("El libro no tiene id")
 
-        val usuario = usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("El usuario no encontrado") }
+        val usuario = usuarioRepository.findByUsername(auth.name)
+            .orElseThrow { NotFound("El usuario no encontrado") }
 
-        usuario.cesta.add(itemCompra)
+        val existingItem = usuario.cesta.find { it.libro._id == libro._id }
+
+        if (existingItem != null) {
+            existingItem.cantidad += itemCompra.cantidad
+        } else {
+            usuario.cesta.add(itemCompra)
+        }
+
         usuarioRepository.save(usuario)
 
-        return "Añadido con exito."
+        return "Añadido con éxito."
     }
+
 
     fun removeItem(auth: Authentication, libroId: String): String {
         val usuario = usuarioRepository.findByUsername(auth.name)
