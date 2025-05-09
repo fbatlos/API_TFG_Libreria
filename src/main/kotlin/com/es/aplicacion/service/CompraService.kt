@@ -1,7 +1,7 @@
 ﻿package com.es.aplicacion.service
 
+import com.es.aplicacion.dto.LibroDTO
 import com.es.aplicacion.model.Compra
-import com.es.aplicacion.model.Libro
 import com.stripe.model.PaymentIntent
 import com.stripe.model.checkout.Session
 import com.stripe.param.PaymentIntentCreateParams
@@ -40,9 +40,19 @@ class PaymentService {
         return Session.create(params)
     }
 
+    fun obtenerEstadoPago(sesion:String):String {
+        val resource =
+            Session.retrieve(
+                sesion
+            )
+        println(resource)
+        return resource.paymentStatus
+    }
+
 }
 
-fun buildSession(libro: Libro, cantidad: Int): SessionCreateParams.LineItem {
+fun buildSession(libro: LibroDTO, cantidad: Int): SessionCreateParams.LineItem {
+    println(libro.precio.toLong())
     return SessionCreateParams.LineItem.builder()
         .setQuantity(cantidad.toLong())
         .setPriceData(

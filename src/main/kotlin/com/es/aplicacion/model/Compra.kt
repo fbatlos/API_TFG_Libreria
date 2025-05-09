@@ -1,5 +1,6 @@
 ﻿package com.es.aplicacion.model
 
+import com.es.aplicacion.dto.LibroDTO
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document("Compras")
@@ -8,7 +9,8 @@ data class Compra(
     val items: List<ItemCompra>
 )
 
+
 data class ItemCompra(
-    val libro: Libro,
+    val libro: LibroDTO,
     var cantidad: Int
 )
