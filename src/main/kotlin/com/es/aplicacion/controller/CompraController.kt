@@ -20,7 +20,9 @@ class CompraController{
     fun crearPago(@RequestBody compra: Compra,authentication: Authentication): Map<String, String> {
         val paymentIntent = paymentService.crearPago(compra)
         return mapOf("clientSecret" to paymentIntent.clientSecret)
-    }*/
+    }
+
+     */
 
     @PostMapping("/checkout")
     fun crearCheckoutSession(@RequestBody compra: Compra, authentication: Authentication): Map<String, String> {
