@@ -12,11 +12,10 @@ import org.springframework.stereotype.Service
 class PaymentService {
 
     fun crearPago(compra: Compra): PaymentIntent {
-        val total = 0.0
-
+        val total = compra.items.sumOf { (libro, cantidad) -> (libro.precio ?: 0.0) * cantidad }
 
         val params = PaymentIntentCreateParams.builder()
-            .setAmount(total.toLong())
+            .setAmount((total * 100).toLong())
             .setCurrency("eur")
             .putMetadata("usuario", compra.usuarioName)
             .build()
@@ -24,14 +23,15 @@ class PaymentService {
         return PaymentIntent.create(params)
     }
 
+
     fun crearCheckoutSession(compra: Compra): Session {
 
         val lineItems = compra.items.map { (libro, cantidad) -> buildSession(libro, cantidad) }
 
         val paramsBuilder = SessionCreateParams.builder()
             .setMode(SessionCreateParams.Mode.PAYMENT)
-            .setSuccessUrl("https://example.com/leafread-success")
-            .setCancelUrl("https://example.com/leafread-cancelado")
+            .setSuccessUrl("https://gainful-melon-timpani.glitch.me/paginaExito.html")
+            .setCancelUrl("https://gainful-melon-timpani.glitch.me/paginaFallo.html")
 
 
         lineItems.forEach { paramsBuilder.addLineItem(it) }
