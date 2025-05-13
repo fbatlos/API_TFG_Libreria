@@ -30,8 +30,8 @@ class PaymentService {
 
         val paramsBuilder = SessionCreateParams.builder()
             .setMode(SessionCreateParams.Mode.PAYMENT)
-            .setSuccessUrl("https://leafread/pago_exitoso")
-            .setCancelUrl("https://leafread/pago_cancelado")
+            .setSuccessUrl("https://leafread.app/pago_exitoso")
+            .setCancelUrl("https://leafread.app/pago_cancelado")
 
 
         lineItems.forEach { paramsBuilder.addLineItem(it) }
