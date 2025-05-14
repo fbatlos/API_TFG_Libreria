@@ -1,71 +1,36 @@
 ﻿package com.es.aplicacion.service
 
-import com.es.aplicacion.dto.LibroDTO
+import com.es.aplicacion.error.exception.BadRequest
 import com.es.aplicacion.model.Compra
-import com.stripe.model.PaymentIntent
-import com.stripe.model.checkout.Session
-import com.stripe.param.PaymentIntentCreateParams
-import com.stripe.param.checkout.SessionCreateParams
+import com.es.aplicacion.repository.CompraRepository
+import com.es.aplicacion.repository.UsuarioRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class PaymentService {
+class CompraService {
+    @Autowired
+    private lateinit var compraRepository: CompraRepository
 
-    fun crearPago(compra: Compra): PaymentIntent {
-        val total = compra.items.sumOf { (libro, cantidad) -> (libro.precio ?: 0.0) * cantidad }
+    @Autowired
+    private lateinit var usuarioRepository: UsuarioRepository
 
-        val params = PaymentIntentCreateParams.builder()
-            .setAmount((total * 100).toLong())
-            .setCurrency("eur")
-            .putMetadata("usuario", compra.usuarioName)
-            .build()
+    fun addTicketCompra(compra: Compra):Boolean {
+        usuarioRepository.findByUsername(compra.usuarioName).orElseThrow { BadRequest("Usuario no existe.") }
 
-        return PaymentIntent.create(params)
+        if (compra.items.isEmpty()){throw BadRequest("La compra no puede estar vacia.")}
+
+        compraRepository.save(compra)
+        return true
     }
 
+    fun obtenerCompras(usuarioName:String): MutableList<Compra>{
+        usuarioRepository.findByUsername(usuarioName).orElseThrow { BadRequest("Usuario no existe.") }
 
-    fun crearCheckoutSession(compra: Compra): Session {
-
-        val lineItems = compra.items.map { (libro, cantidad) -> buildSession(libro, cantidad) }
-
-        val paramsBuilder = SessionCreateParams.builder()
-            .setMode(SessionCreateParams.Mode.PAYMENT)
-            .setSuccessUrl("https://gainful-melon-timpani.glitch.me/paginaExito.html")
-            .setCancelUrl("https://gainful-melon-timpani.glitch.me/paginaFallo.html")
-
-
-        lineItems.forEach { paramsBuilder.addLineItem(it) }
-
-        val params = paramsBuilder.build()
-
-        return Session.create(params)
+        return compraRepository.findByUsuarioName(usuarioName).toMutableList()
     }
 
-    fun obtenerEstadoPago(sesion:String):String {
-        val resource =
-            Session.retrieve(
-                sesion
-            )
-        println(resource)
-        return resource.paymentStatus
+    fun obtenerAllCompras(): MutableList<Compra>{
+        return compraRepository.findAll()
     }
-
-}
-
-fun buildSession(libro: LibroDTO, cantidad: Int): SessionCreateParams.LineItem {
-    println(libro.precio.toLong())
-    return SessionCreateParams.LineItem.builder()
-        .setQuantity(cantidad.toLong())
-        .setPriceData(
-            SessionCreateParams.LineItem.PriceData.builder()
-                .setCurrency("eur")
-                .setUnitAmount((libro.precio?.times(100)?.toLong() ?: 0L))
-                .setProductData(
-                    SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                        .setName(libro.titulo)
-                        .build()
-                )
-                .build()
-        )
-        .build()
 }
