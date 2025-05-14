@@ -8,7 +8,4 @@ import org.springframework.stereotype.Repository
 @Repository
 interface CompraRepository : MongoRepository<Compra, String> {
     fun findByUsuarioName(usuarioName: String): List<Compra>
-
-    @Query("{ 'items.libroId': ?0 }")
-    fun findPurchasesByBookId(bookId: String): List<Compra>
 }

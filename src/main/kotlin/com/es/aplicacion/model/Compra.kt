@@ -2,11 +2,13 @@
 
 import com.es.aplicacion.dto.LibroDTO
 import org.springframework.data.mongodb.core.mapping.Document
+import java.util.Date
 
 @Document("Compras")
 data class Compra(
     val usuarioName: String,
-    val items: List<ItemCompra>
+    val items: List<ItemCompra>,
+    val fechaCompra:Date = Date()
 )
 
 

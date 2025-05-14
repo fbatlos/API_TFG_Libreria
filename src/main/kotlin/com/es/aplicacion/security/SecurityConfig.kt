@@ -43,6 +43,7 @@ class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,"/libros/admin/libros").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT,"/libros/admin/libros/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE,"/libros/admin/libros/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/compra/admin/tickets").hasRole("ADMIN")
                 .anyRequest().authenticated()
             } // Los recursos protegidos y publicos
             .oauth2ResourceServer { oauth2 -> oauth2.jwt(Customizer.withDefaults()) }

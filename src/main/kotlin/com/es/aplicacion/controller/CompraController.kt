@@ -1,6 +1,7 @@
 ﻿package com.es.aplicacion.controller
 
 import com.es.aplicacion.model.Compra
+import com.es.aplicacion.service.CompraService
 import com.es.aplicacion.service.LibroService
 import com.es.aplicacion.service.PaymentService
 import com.stripe.model.checkout.Session
@@ -15,14 +16,8 @@ class CompraController{
     @Autowired
     private lateinit var paymentService: PaymentService
 
-    /*
-    @PostMapping("/crear")
-    fun crearPago(@RequestBody compra: Compra,authentication: Authentication): Map<String, String> {
-        val paymentIntent = paymentService.crearPago(compra)
-        return mapOf("clientSecret" to paymentIntent.clientSecret)
-    }
-
-     */
+    @Autowired
+    private lateinit var compraService: CompraService
 
     @PostMapping("/checkout")
     fun crearCheckoutSession(@RequestBody compra: Compra, authentication: Authentication): Map<String, String> {
@@ -35,8 +30,28 @@ class CompraController{
 
     @GetMapping("/estado/{sessionId}")
     fun obtenerEstadoPago(@PathVariable sessionId: String): Map<String, String> {
-        println(sessionId)
         val estado = paymentService.obtenerEstadoPago(sessionId)
-        return mapOf("status" to estado)
+        return mapOf("estatus" to estado)
     }
+
+    @PostMapping("/ticket")
+    fun addTicketCompra(@RequestBody compra: Compra, authentication: Authentication): Map<String, Boolean> {
+        val ticket = compraService.addTicketCompra(compra)
+        return mapOf("creado" to ticket)
+    }
+
+    @GetMapping("/tickets")
+    fun obtenerTickets(
+        authentication: Authentication
+    ): MutableList<Compra> {
+        val compras = compraService.obtenerCompras(authentication.name)
+        return compras
+    }
+
+    @GetMapping("/admin/tickets")
+    fun obtenerAllCompras(): MutableList<Compra> {
+        val compras = compraService.obtenerAllCompras()
+        return compras
+    }
+
 }
