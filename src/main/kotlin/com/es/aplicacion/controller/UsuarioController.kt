@@ -120,11 +120,20 @@ class UsuarioController {
     }
 
     @PostMapping("/cesta")
-    fun addOrUpdateItemCompra(
+    fun addItemCompra(
         @RequestBody itemCompra: ItemCompra,
         authentication: Authentication
     ): ResponseEntity<String> {
-        usuarioService.addOrUpdateItem(authentication, itemCompra)
+        usuarioService.addItem(authentication, itemCompra)
+        return ResponseEntity.ok("Añadido")
+    }
+
+    @PutMapping("/cesta")
+    fun updateItemCompra(
+        @RequestBody itemCompra: List<ItemCompra>,
+        authentication: Authentication
+    ): ResponseEntity<String> {
+        usuarioService.updateItems(authentication, itemCompra)
         return ResponseEntity.ok("Actualizado")
     }
 

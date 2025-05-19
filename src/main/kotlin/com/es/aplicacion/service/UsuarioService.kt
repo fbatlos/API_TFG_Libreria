@@ -163,7 +163,7 @@ class UsuarioService : UserDetailsService {
         return usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("Usuario ${auth.name} no existe") }.cesta
     }
 
-    fun addOrUpdateItem(auth: Authentication, itemCompra: ItemCompra): String {
+    fun addItem(auth: Authentication, itemCompra: ItemCompra): String {
         val libro = itemCompra.libro._id?.let {
             libroRepository.findById(it).orElseThrow { NotFound("El libro no existe") }
         } ?: throw BadRequest("El libro no tiene id")
@@ -201,5 +201,13 @@ class UsuarioService : UserDetailsService {
         usuarioRepository.save(usuario)
 
         return "Actualizado con éxito."
+    }
+
+    fun updateItems(auth: Authentication, items:List<ItemCompra>): String {
+        val usuario = usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("El usuario no encontrado") }
+
+        usuario.cesta = items.toMutableList()
+        usuarioRepository.save(usuario)
+        return "Actualizado con exito."
     }
 }
