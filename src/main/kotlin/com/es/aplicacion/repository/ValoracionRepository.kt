@@ -13,7 +13,7 @@ interface ValoracionRepository: MongoRepository<Valoracion, String> {
     @Query("{ 'libro_id': ?0 }")
     fun findValoracionesByLibroId(libroid: String): Optional<List<Valoracion>>
 
-    @Query("{ 'usuarioid': ?0 }")
-    fun findValoracionByUsuarioId(usuarioid: String): Optional<List<Valoracion>>
+    @Query("{ 'usuarioName': ?0 }")
+    fun findValoracionByUsuarioName(usuarioName: String): Optional<List<Valoracion>>
 
 }
