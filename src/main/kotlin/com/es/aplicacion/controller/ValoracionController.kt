@@ -40,4 +40,13 @@ class ValoracionController {
         valoracionService.deleteValoracion(idValoracion,authentication)
         return ResponseEntity.noContent().build()
     }
+
+    @GetMapping("/mis-valoraciones")
+    fun getMisValoraciones(
+        authentication: Authentication
+    ): ResponseEntity<List<Valoracion>>{
+        val valoraciones = valoracionService.getMisValoraciones(authentication)
+        return ResponseEntity(valoraciones,HttpStatus.OK)
+    }
+
 }

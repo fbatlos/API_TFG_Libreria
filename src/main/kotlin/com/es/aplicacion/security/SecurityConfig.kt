@@ -40,6 +40,7 @@ class SecurityConfig {
                 .requestMatchers("/usuarios/login").permitAll()
                 .requestMatchers("/usuarios/register").permitAll()
                 .requestMatchers("/libros").permitAll()
+                .requestMatchers(HttpMethod.GET,"/valoracion/{libro_id}").permitAll()
                 .requestMatchers(HttpMethod.POST,"/libros/admin/libros").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT,"/libros/admin/libros/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE,"/libros/admin/libros/{id}").hasRole("ADMIN")
