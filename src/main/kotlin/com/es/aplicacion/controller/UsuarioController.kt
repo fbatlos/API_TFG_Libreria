@@ -146,4 +146,12 @@ class UsuarioController {
         return ResponseEntity.noContent().build()
     }
 
+    @DeleteMapping("/cesta")
+    fun removeAllCompra(
+        authentication: Authentication
+    ): ResponseEntity<Void> {
+        usuarioService.removeAllCesta(authentication)
+        return ResponseEntity.noContent().build()
+    }
+
 }

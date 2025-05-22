@@ -2,6 +2,7 @@
 
 import com.es.aplicacion.dto.LibroDTO
 import com.es.aplicacion.model.Compra
+import com.es.aplicacion.model.ItemCompra
 import com.stripe.model.checkout.Session
 import com.stripe.param.checkout.SessionCreateParams
 import org.springframework.stereotype.Service
@@ -10,6 +11,12 @@ import org.springframework.stereotype.Service
 class PaymentService {
 
     fun crearCheckoutSession(compra: Compra): Session {
+        val total = compra.items.sumOf { it.libro.precio?.toDouble()?.times(it.cantidad) ?: 0.0 }
+        compra.items = compra.items.toMutableList()
+
+        if (total <= 50){
+            (compra.items as MutableList<ItemCompra>).add(ItemCompra(LibroDTO(null,"Envio",5.99,"eur"),1))
+        }
 
         val lineItems = compra.items.map { (libro, cantidad) -> buildSession(libro, cantidad) }
 

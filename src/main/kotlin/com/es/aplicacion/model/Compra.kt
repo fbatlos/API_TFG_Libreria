@@ -8,7 +8,7 @@ import java.util.Date
 @Document("Compras")
 data class Compra(
     val usuarioName: String,
-    val items: List<ItemCompra>,
+    var items: List<ItemCompra>,
     val fechaCompra:LocalDateTime = LocalDateTime.now()
 )
 
