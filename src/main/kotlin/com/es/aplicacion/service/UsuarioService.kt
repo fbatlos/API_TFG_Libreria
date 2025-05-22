@@ -203,6 +203,13 @@ class UsuarioService : UserDetailsService {
         return "Actualizado con éxito."
     }
 
+    fun removeAllCesta(auth: Authentication): String {
+        val usuario = usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("El usuario no encontrado") }
+        usuario.cesta.clear()
+        usuarioRepository.save(usuario)
+        return "Exito"
+    }
+
     fun updateItems(auth: Authentication, items:List<ItemCompra>): String {
         val usuario = usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("El usuario no encontrado") }
 
