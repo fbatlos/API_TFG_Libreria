@@ -49,4 +49,9 @@ class ValoracionController {
         return ResponseEntity(valoraciones,HttpStatus.OK)
     }
 
+    @PostMapping("/poblar")
+    fun poblarValoraciones(): ResponseEntity<String> {
+        valoracionService.poblarValoracionesAleatorias()
+        return ResponseEntity("Valoraciones aleatorias generadas", HttpStatus.CREATED)
+    }
 }
