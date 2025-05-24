@@ -16,4 +16,7 @@ interface ValoracionRepository: MongoRepository<Valoracion, String> {
     @Query("{ 'usuarioName': ?0 }")
     fun findValoracionByUsuarioName(usuarioName: String): Optional<List<Valoracion>>
 
+    fun findByLibroidAndUsuarioName(libroid: String, usuarioName: String): Optional<Valoracion>
+
+
 }
