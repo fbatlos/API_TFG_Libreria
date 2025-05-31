@@ -34,7 +34,7 @@ class ValoracionController {
 
     @DeleteMapping("/eliminar/{idValoracion}")
     fun removeValoracion(
-        @PathVariable(value = "id") idValoracion: String,
+        @PathVariable(value = "idValoracion") idValoracion: String,
         authentication: Authentication
     ): ResponseEntity<String> {
         valoracionService.deleteValoracion(idValoracion,authentication)

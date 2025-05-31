@@ -192,12 +192,7 @@ class UsuarioService : UserDetailsService {
         val item = usuario.cesta.find { it.libro._id == libroId }
             ?: throw NotFound("El libro no está en la cesta")
 
-        if (item.cantidad > 1) {
-            item.cantidad -= 1
-        } else {
-            usuario.cesta.remove(item)
-        }
-
+        usuario.cesta.remove(item)
         usuarioRepository.save(usuario)
 
         return "Actualizado con éxito."
