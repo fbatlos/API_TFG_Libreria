@@ -18,5 +18,6 @@ data class Libro(
     var enlaceEbook: String? = null,
     var isbn13: String? = null,
     var categorias: List<String> = emptyList(),
+    var valoracionMedia: Double? = 0.0,
     var stock: Stock
 )
