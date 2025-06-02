@@ -4,8 +4,10 @@ import com.es.aplicacion.model.Compra
 import com.es.aplicacion.service.CompraService
 import com.es.aplicacion.service.LibroService
 import com.es.aplicacion.service.PaymentService
+import com.es.aplicacion.service.UsuarioService
 import com.stripe.model.checkout.Session
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
@@ -18,6 +20,7 @@ class CompraController{
 
     @Autowired
     private lateinit var compraService: CompraService
+
 
     @PostMapping("/checkout")
     fun crearCheckoutSession(@RequestBody compra: Compra, authentication: Authentication): Map<String, String> {
@@ -52,6 +55,16 @@ class CompraController{
     fun obtenerAllCompras(): MutableList<Compra> {
         val compras = compraService.obtenerAllCompras()
         return compras
+    }
+
+    @PostMapping("/actualizar-stock")
+    fun realizarCompra(
+        @RequestBody compra: Compra,
+        authentication: Authentication
+    ): ResponseEntity<String> {
+
+        compraService.actualizarStock(compra, authentication)
+        return ResponseEntity.ok("Compra realizada correctamente.")
     }
 
 }
