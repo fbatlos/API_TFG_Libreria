@@ -1,10 +1,13 @@
 ﻿package com.es.aplicacion.service
 
 import com.es.aplicacion.error.exception.BadRequest
+import com.es.aplicacion.error.exception.NotFound
 import com.es.aplicacion.model.Compra
 import com.es.aplicacion.repository.CompraRepository
+import com.es.aplicacion.repository.LibroRepository
 import com.es.aplicacion.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,6 +17,9 @@ class CompraService {
 
     @Autowired
     private lateinit var usuarioRepository: UsuarioRepository
+
+    @Autowired
+    private lateinit var libroRepository: LibroRepository
 
     fun addTicketCompra(compra: Compra):Boolean {
         usuarioRepository.findByUsername(compra.usuarioName).orElseThrow { BadRequest("Usuario no existe.") }
@@ -32,5 +38,28 @@ class CompraService {
 
     fun obtenerAllCompras(): MutableList<Compra>{
         return compraRepository.findAll()
+    }
+
+    fun actualizarStock(compra: Compra,authentication: Authentication){
+        val usuario = usuarioRepository.findByUsername(authentication.name)
+            .orElseThrow { NotFound("Usuario no encontrado.") }
+
+        compra.items.forEach { item ->
+            val libro = libroRepository.findById(item.libro._id!!)
+                .orElseThrow { NotFound("Libro ${item.libro.titulo} no encontrado.") }
+
+            if (libro.stock.numero < item.cantidad) {
+                throw BadRequest("Stock insuficiente para ${item.libro.titulo}. Stock actual: ${libro.stock.numero}")
+            }
+        }
+
+        compra.items.forEach { item ->
+            val libro = libroRepository.findById(item.libro._id!!).get()
+            libro.stock.numero -= item.cantidad
+            libroRepository.save(libro)
+        }
+
+        val compraGuardada = compra.copy(usuarioName = usuario.username)
+        compraRepository.save(compraGuardada)
     }
 }

@@ -2,5 +2,5 @@
 
 data class Stock(
     val tipo:TipoStock,
-    val numero: Int
+    var numero: Int
 )
