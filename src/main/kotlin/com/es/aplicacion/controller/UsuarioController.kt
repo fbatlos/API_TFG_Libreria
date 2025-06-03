@@ -46,7 +46,7 @@ class UsuarioController {
         try {
             authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(usuarioRegisterDTO.username, usuarioRegisterDTO.password))
         } catch (e: AuthenticationException) {
-            throw UnauthorizedException("Credenciales incorrectas")
+            throw UnauthorizedException("Credenciales incorrectas repetidas")
         }
 
         var token = tokenService.generarToken(authentication)

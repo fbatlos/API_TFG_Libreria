@@ -68,9 +68,9 @@ class UsuarioService : UserDetailsService {
         }
 
         //Comprobamos que el usuario no existe
-        if (!usuarioRepository.findByUsername(usuarioInsertadoDTO.username).isEmpty) { throw Conflict("${usuarioInsertadoDTO.username} ya esta registrado.")}
+        if (!usuarioRepository.findByUsername(usuarioInsertadoDTO.username).isEmpty) { throw Conflict("Usuario ya esta registrado.")}
         //Comprobamos que el email no existe
-        if (!usuarioRepository.findByEmail(usuarioInsertadoDTO.email).isEmpty) { throw Conflict("${usuarioInsertadoDTO.email} ya esta registrado.") }
+        if (!usuarioRepository.findByEmail(usuarioInsertadoDTO.email).isEmpty) { throw Conflict("Email ya esta registrado.") }
 
         usuarioRepository.save(
             Usuario(
