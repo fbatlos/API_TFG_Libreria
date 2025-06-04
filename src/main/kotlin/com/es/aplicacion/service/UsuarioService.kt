@@ -79,7 +79,8 @@ class UsuarioService : UserDetailsService {
                 password = passwordEncoder.encode(usuarioInsertadoDTO.password),
                 email = usuarioInsertadoDTO.email,
                 roles = usuarioInsertadoDTO.rol,
-                librosfav = mutableListOf()
+                librosfav = mutableListOf(),
+                avatar = "68402c80be43b505fe8a2c78"
             )
         )
 
@@ -87,7 +88,8 @@ class UsuarioService : UserDetailsService {
             username = usuarioInsertadoDTO.username,
             email = usuarioInsertadoDTO.email,
             librosfav = mutableListOf(),
-            rol = usuarioInsertadoDTO.rol
+            rol = usuarioInsertadoDTO.rol,
+            avatar = "68402c80be43b505fe8a2c78"
         )
         return usuario
     }
@@ -100,7 +102,8 @@ class UsuarioService : UserDetailsService {
             email = usuario.email,
             direccion = usuario.direccion,
             librosfav = usuario.librosfav,
-            rol = usuario.roles
+            rol = usuario.roles,
+            avatar = usuario.avatar!!
         )
     }
 
