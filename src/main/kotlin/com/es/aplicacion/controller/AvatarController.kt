@@ -5,10 +5,7 @@ import com.es.aplicacion.service.AvatarService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/avatar")
@@ -16,9 +13,9 @@ class AvatarController {
     @Autowired
     private lateinit var avatarService: AvatarService
 
-    @GetMapping("/miAvatar")
+    @GetMapping("/miAvatar/{idAvatar}")
     fun getAvatar(
-        @RequestBody idAvatar: String,
+        @PathVariable idAvatar: String,
         authentication: Authentication
     ): ResponseEntity<Avatar> {
         val avatar = avatarService.getAvatar(idAvatar)
