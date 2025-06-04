@@ -7,6 +7,7 @@ import sun.jvm.hotspot.utilities.BitMap
 
 @Document("Avatares")
 data class Avatar (
+
     @BsonId
     val _id : String?,
     val BitMap : BitMap?
