@@ -11,5 +11,5 @@ data class Avatar(
     val _id: String? = null,
     val filename: String,
     val mimeType: String,
-    val data: Binary // Base64 string
+    val data: ByteArray  // Base64 string
 )
