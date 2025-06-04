@@ -8,5 +8,5 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class Avatar (
     @BsonId
     val _id : String?,
-    val BitMap : ByteArray?
+    val BitMap : String?
 )
