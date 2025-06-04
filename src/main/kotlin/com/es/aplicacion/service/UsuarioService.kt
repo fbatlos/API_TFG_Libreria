@@ -9,6 +9,7 @@ import com.es.aplicacion.model.Direccion
 import com.es.aplicacion.model.ItemCompra
 import com.es.aplicacion.model.Libro
 import com.es.aplicacion.model.Usuario
+import com.es.aplicacion.repository.AvatarRepository
 import com.es.aplicacion.repository.LibroRepository
 import com.es.aplicacion.repository.UsuarioRepository
 import com.es.aplicacion.util.Utils
@@ -33,6 +34,9 @@ class UsuarioService : UserDetailsService {
     private lateinit var passwordEncoder: PasswordEncoder
     @Autowired
     private lateinit var apiService: ExternalApiService
+
+    @Autowired
+    private lateinit var avatarRepository: AvatarRepository
 
 
     override fun loadUserByUsername(username: String?): UserDetails {
@@ -130,6 +134,16 @@ class UsuarioService : UserDetailsService {
         return "Se añadío con exito."
     }
 
+    fun deleteDireccion(direccion: Direccion, authentication: Authentication) {
+        val usuario = usuarioRepository.findByUsername(authentication.name).orElseThrow{NotFound("Usuario no encontrado")}
+        if (usuario.direccion.contains(direccion)){
+            usuario.direccion.remove(direccion)
+            usuarioRepository.save(usuario)
+        }else{
+            throw BadRequest("Direccion no es correcta")
+        }
+    }
+
     fun addFavorito(auth: Authentication, libroId: String):String {
         val usuario = usuarioRepository.findByUsername(auth.name)
             .orElseThrow { NotFound("Usuario ${auth.name} no existe") }
@@ -212,6 +226,15 @@ class UsuarioService : UserDetailsService {
         val usuario = usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("El usuario no encontrado") }
 
         usuario.cesta = items.toMutableList()
+        usuarioRepository.save(usuario)
+        return "Actualizado con exito."
+    }
+
+    fun updateAvatar(auth: Authentication, avatarId: String):String {
+        val usuario = usuarioRepository.findByUsername(auth.name).orElseThrow { NotFound("El usuario no encontrado") }
+        val avatar = avatarRepository.findById(avatarId).orElseThrow { NotFound("El avatar no encontrado") }
+
+        usuario.avatar = avatar._id
         usuarioRepository.save(usuario)
         return "Actualizado con exito."
     }

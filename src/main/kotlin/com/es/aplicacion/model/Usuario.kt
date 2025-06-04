@@ -15,5 +15,5 @@ data class Usuario(
     var direccion: MutableList<Direccion> = mutableListOf(),
     val librosfav: MutableList<String> = mutableListOf(),
     var cesta:MutableList<ItemCompra> = mutableListOf(),
-    val avatar: String?
+    var avatar: String?
 )
