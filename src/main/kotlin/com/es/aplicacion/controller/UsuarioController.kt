@@ -5,10 +5,7 @@ import com.es.aplicacion.dto.UsuarioDTO
 import com.es.aplicacion.dto.UsuarioInterfazDTO
 import com.es.aplicacion.dto.UsuarioRegisterDTO
 import com.es.aplicacion.error.exception.UnauthorizedException
-import com.es.aplicacion.model.AuthResponse
-import com.es.aplicacion.model.Direccion
-import com.es.aplicacion.model.ItemCompra
-import com.es.aplicacion.model.Libro
+import com.es.aplicacion.model.*
 import com.es.aplicacion.service.TokenService
 import com.es.aplicacion.service.UsuarioService
 import jakarta.servlet.http.HttpServletRequest
@@ -88,6 +85,17 @@ class UsuarioController {
         return ResponseEntity(usuarioService.addDireccion(direccion, authentication),HttpStatus.OK)
     }
 
+    @DeleteMapping("/direccion")
+    fun deleteDireccion(
+        @RequestBody direccion: Direccion,
+        authentication: Authentication
+    ): ResponseEntity<String> {
+         usuarioService.deleteDireccion(direccion, authentication)
+        return ResponseEntity.noContent().build()
+    }
+
+
+
     @GetMapping("/favoritos")
     fun getFavoritos(
         authentication: Authentication
@@ -153,5 +161,15 @@ class UsuarioController {
         usuarioService.removeAllCesta(authentication)
         return ResponseEntity.noContent().build()
     }
+
+    @PutMapping("/avatar")
+    fun updateAvatar(
+        @RequestBody avatarId:String,
+        authentication: Authentication
+    ): ResponseEntity<String> {
+        return ResponseEntity(usuarioService.updateAvatar(authentication,avatarId),HttpStatus.OK)
+    }
+
+
 
 }
