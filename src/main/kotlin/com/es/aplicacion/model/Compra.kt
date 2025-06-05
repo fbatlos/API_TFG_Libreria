@@ -9,7 +9,8 @@ import java.util.Date
 data class Compra(
     val usuarioName: String,
     var items: List<ItemCompra>,
-    val fechaCompra:LocalDateTime = LocalDateTime.now()
+    val fechaCompra: String,
+    val direccion: Direccion
 )
 
 
