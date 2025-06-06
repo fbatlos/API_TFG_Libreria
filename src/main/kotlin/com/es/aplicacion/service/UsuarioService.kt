@@ -22,21 +22,13 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class UsuarioService : UserDetailsService {
-
-    @Autowired
-    private lateinit var usuarioRepository: UsuarioRepository
-
-    @Autowired
-    private lateinit var libroRepository: LibroRepository
-
-    @Autowired
-    private lateinit var passwordEncoder: PasswordEncoder
-    @Autowired
-    private lateinit var apiService: ExternalApiService
-
-    @Autowired
-    private lateinit var avatarRepository: AvatarRepository
+class UsuarioService(
+    private val usuarioRepository: UsuarioRepository,
+    private val libroRepository: LibroRepository,
+    private val passwordEncoder: PasswordEncoder,
+    private val apiService: ExternalApiService,
+    private val avatarRepository: AvatarRepository
+) : UserDetailsService {
 
 
     override fun loadUserByUsername(username: String?): UserDetails {

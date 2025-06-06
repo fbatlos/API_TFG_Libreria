@@ -27,14 +27,22 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(group = "org.junit.vintage")
+		exclude(module = "mockito-core")
+	}
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("org.mockito:mockito-core:5.5.0")
+	testImplementation("org.mockito:mockito-junit-jupiter:5.5.0")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
 
 	implementation("com.stripe:stripe-java:24.24.0")
 
 	implementation("org.mongodb:mongodb-driver-kotlin-sync:5.3.0")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
+
 }
 
 kotlin {
