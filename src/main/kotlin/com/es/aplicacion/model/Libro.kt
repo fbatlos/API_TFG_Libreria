@@ -19,5 +19,5 @@ data class Libro(
     var isbn13: String? = null,
     var categorias: List<String> = emptyList(),
     var valoracionMedia: Double? = 0.0,
-    var stock: Stock
+    var stock: Stock = Stock(TipoStock.AGOTADO,0)
 )

@@ -169,7 +169,4 @@ class UsuarioController {
     ): ResponseEntity<String> {
         return ResponseEntity(usuarioService.updateAvatar(authentication,avatarId),HttpStatus.OK)
     }
-
-
-
 }
