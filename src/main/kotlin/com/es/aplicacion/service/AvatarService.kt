@@ -7,17 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class AvatarService {
+class AvatarService(
+    private val avatarRepository: AvatarRepository
+) {
 
-    @Autowired
-    private lateinit var avatarRepository: AvatarRepository
+    fun getAllAvatares(): List<Avatar> =
+        avatarRepository.findAll()
 
-    fun getAllAvatares(): List<Avatar>{
-        return avatarRepository.findAll()
-    }
-
-    fun getAvatar(idAvatar:String): Avatar{
-        return avatarRepository.findById(idAvatar).orElseThrow { NotFound("No se ha encontrado el avatar.") }
-    }
-
+    fun getAvatar(idAvatar: String): Avatar =
+        avatarRepository.findById(idAvatar)
+            .orElseThrow { NotFound("No se ha encontrado el avatar.") }
 }

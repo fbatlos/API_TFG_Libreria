@@ -19,29 +19,26 @@ import java.math.RoundingMode
 import java.time.LocalDateTime
 
 @Service
-class ValoracionService {
-    @Autowired
-    private lateinit var valoracionRepository: ValoracionRepository
+class ValoracionService(
+    private val valoracionRepository: ValoracionRepository,
+    private val libroRepository: LibroRepository,
+    private val usuarioRepository: UsuarioRepository,
+    private val compraRepository: CompraRepository
+) {
 
-    @Autowired
-    private lateinit var libroRepository: LibroRepository
-
-    @Autowired
-    private lateinit var usuarioRepository: UsuarioRepository
-
-    @Autowired
-    private lateinit var compraRepository: CompraRepository
-
-    fun gatValoraciones(libroId:String): List<Valoracion>?{
+    fun gatValoraciones(libroId: String): List<Valoracion>? {
         libroRepository.findById(libroId).orElseThrow { NotFound("Libro no encontrado.") }
 
-        return valoracionRepository.findValoracionesByLibroId(libroId).orElseThrow { BadRequest("Libro no encontrado.") }
-
+        return valoracionRepository.findValoracionesByLibroId(libroId)
+            .orElseThrow { BadRequest("Libro no encontrado.") }
     }
 
     fun addValoracion(valoracion: Valoracion): String {
-        usuarioRepository.findByUsername(valoracion.usuarioName).orElseThrow { BadRequest("Id Usuario no registrada.") }
-        val libro = libroRepository.findById(valoracion.libroid).orElseThrow { BadRequest("Libro no registrado.") }
+        usuarioRepository.findByUsername(valoracion.usuarioName)
+            .orElseThrow { BadRequest("Id Usuario no registrada.") }
+
+        val libro = libroRepository.findById(valoracion.libroid)
+            .orElseThrow { BadRequest("Libro no registrado.") }
 
         val compra = compraRepository.findByUsuarioName(valoracion.usuarioName).filter {
             it.items.map { it.libro._id }.contains(valoracion.libroid)
@@ -51,45 +48,53 @@ class ValoracionService {
             throw BadRequest("Un valor no es válido.")
         }
 
-        val yaValorado = valoracionRepository.findByLibroidAndUsuarioName(valoracion.libroid, valoracion.usuarioName).isPresent
+        val yaValorado = valoracionRepository.findByLibroidAndUsuarioName(
+            valoracion.libroid,
+            valoracion.usuarioName
+        ).isPresent
+
         if (yaValorado) {
             throw Conflict("Ya has dado tu valoración a este libro.")
         }
 
         valoracionRepository.save(valoracion)
-
         actualizarMediaLibro(libro._id!!)
 
         return "Valoración añadida con éxito"
     }
 
-
     fun deleteValoracion(valoracionId: String, authentication: Authentication): String {
-        val valoracion = valoracionRepository.findById(valoracionId).orElseThrow { BadRequest("Valoracion no encontrada.") }
 
-        val usuario = usuarioRepository.findByUsername(authentication.name).orElseThrow { BadRequest("Usuario no registrado.") }
+        val usuario = usuarioRepository.findByUsername(authentication.name)
+            .orElseThrow { BadRequest("Usuario no registrado.") }
 
-        if (valoracion.usuarioName != usuario.username && !authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
+        val valoracion = valoracionRepository.findById(valoracionId)
+            .orElseThrow { BadRequest("Valoracion no encontrada.") }
+
+        if (valoracion.usuarioName != usuario.username &&
+            !authentication.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))
+        ) {
             throw UnauthorizedException("Usuario no autorizado.")
         }
 
         valoracionRepository.deleteById(valoracionId)
-
         actualizarMediaLibro(valoracion.libroid)
 
         return "Valoración eliminada con éxito"
     }
 
+    fun getMisValoraciones(authentication: Authentication): List<Valoracion> {
+        usuarioRepository.findByUsername(authentication.name)
+            .orElseThrow { NotFound("Usuario no encontrado.") }
 
-    fun getMisValoraciones(authentication: Authentication): List<Valoracion>{
-        usuarioRepository.findByUsername(authentication.name).orElseThrow { NotFound("Usuario no encontrado.") }
-
-        val valoraciones = valoracionRepository.findValoracionByUsuarioName(authentication.name).get()
-        return valoraciones
+        return valoracionRepository.findValoracionByUsuarioName(authentication.name)
+            .get()
     }
 
     private fun actualizarMediaLibro(libroId: String) {
-        val libro = libroRepository.findById(libroId).orElseThrow { NotFound("Libro no encontrado.") }
+        val libro = libroRepository.findById(libroId)
+            .orElseThrow { NotFound("Libro no encontrado.") }
+
         val valoraciones = valoracionRepository.findValoracionesByLibroId(libroId).orElse(emptyList())
 
         val media = if (valoraciones.isNotEmpty()) {
@@ -101,5 +106,4 @@ class ValoracionService {
         libro.valoracionMedia = BigDecimal(media).setScale(2, RoundingMode.HALF_UP).toDouble()
         libroRepository.save(libro)
     }
-
 }
