@@ -8,6 +8,8 @@ import com.es.aplicacion.error.exception.UnauthorizedException
 import com.es.aplicacion.model.*
 import com.es.aplicacion.service.TokenService
 import com.es.aplicacion.service.UsuarioService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/usuarios")
+@Tag(name = "Ejemplo")
 class UsuarioController {
 
     @Autowired
@@ -29,6 +32,7 @@ class UsuarioController {
     @Autowired
     private lateinit var usuarioService: UsuarioService
 
+    @Operation(summary = "Obtener datos")
     @PostMapping("/register")
     fun insert(
         httpRequest: HttpServletRequest,
@@ -169,7 +173,4 @@ class UsuarioController {
     ): ResponseEntity<String> {
         return ResponseEntity(usuarioService.updateAvatar(authentication,avatarId),HttpStatus.OK)
     }
-
-
-
 }
