@@ -182,5 +182,5 @@ Esta aplicación es un sistema backend desarrollado en Kotlin con Spring Boot, q
 
 ## Muestra de los TestPasados
 
-![Test Pasados Usuario](aplicacion/util/imagenes/testUsuario.png)
+![Test Pasados Usuario](src/main/kotlin/com/es/aplicacion/util/imagenes/testUsuario.png)
 
