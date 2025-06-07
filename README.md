@@ -15,6 +15,8 @@ Puedes acceder a la documentación interactiva aquí:
 
 Disponible solo cuando Render está en funcionamiento.!!
 
+![Demostración Swagger](src/main/resources/imagenes/demostracionSwagger.png)
+
 ---
 
 ## Modelos principales
