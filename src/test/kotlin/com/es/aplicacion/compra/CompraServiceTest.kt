@@ -6,13 +6,10 @@ import com.es.aplicacion.model.*
 import com.es.aplicacion.repository.CompraRepository
 import com.es.aplicacion.repository.LibroRepository
 import com.es.aplicacion.repository.UsuarioRepository
-import com.es.aplicacion.service.AvatarService
 import com.es.aplicacion.service.CompraService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.kotlin.*
 import org.springframework.security.core.Authentication
 import java.util.*
@@ -158,7 +155,7 @@ class CompraServiceTest {
         val authentication: Authentication = mock()
         whenever(authentication.name).thenReturn(usuarioName)
 
-        val stock = Stock(numero = 2, tipo = TipoStock.EN_STOCK)
+        val stock = Stock(numero = 2, tipo = TipoStock.DISPONIBLE)
         val libro = Libro(_id = libroId, titulo = "Libro 1", stock = stock)
         val libroDTO = LibroDTO("libro2","libro2",9.99,"EUR")
         val itemCompra = ItemCompra(libro = libroDTO, cantidad = 2)
