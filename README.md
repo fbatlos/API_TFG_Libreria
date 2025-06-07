@@ -6,6 +6,17 @@ Esta aplicación es un sistema backend desarrollado en Kotlin con Spring Boot, q
 
 ---
 
+## Documentación Swagger
+
+La documentación de la API fue implementada utilizando **Springdoc OpenAPI** con Swagger UI.
+
+Puedes acceder a la documentación interactiva aquí:
+🔗 [Swagger UI](https://api-tfg.onrender.com/swagger-ui/index.html#/)
+
+Disponible solo cuando Render está en funcionamiento.!!
+
+---
+
 ## Modelos principales
 
 - **Usuario**: almacena datos del usuario, incluyendo roles, direcciones, lista de libros favoritos, cesta de compra y avatar.  
