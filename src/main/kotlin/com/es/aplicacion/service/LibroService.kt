@@ -9,18 +9,16 @@ import com.es.aplicacion.repository.ValoracionRepository
 import com.es.aplicacion.util.Utils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-
 @Service
-class LibroService {
-    @Autowired
-    private lateinit var libroRepository: LibroRepository
-
-    @Autowired
-    private lateinit var valoracionRepository: ValoracionRepository
-
+class LibroService(
+    private val libroRepository: LibroRepository,
+    private val valoracionRepository: ValoracionRepository
+) {
 
     fun addLibro(libro: Libro): Boolean {
-        if(libroRepository.findByIsbn13(libro.isbn13!!).isPresent){Conflict("El libro ya existe.")}
+        if (libroRepository.findByIsbn13(libro.isbn13!!).isPresent) {
+            throw Conflict("El libro ya existe.")
+        }
 
         Utils.validacionesLibroSimples(libro)
 
@@ -28,8 +26,8 @@ class LibroService {
         return true
     }
 
-    fun putLibro(id:String,libro: Libro): Boolean {
-        val libroExistente = libroRepository.findById(id).orElseThrow{NotFound("Libro no encontrado.")}
+    fun putLibro(id: String, libro: Libro): Boolean {
+        val libroExistente = libroRepository.findById(id).orElseThrow { NotFound("Libro no encontrado.") }
 
         Utils.validacionesLibroSimples(libro)
 
@@ -39,7 +37,6 @@ class LibroService {
         libroExistente.autores = libro.autores
         libroExistente.categorias = libro.categorias
         libroExistente.moneda = libro.moneda
-
 
         libroRepository.save(libroExistente)
 
@@ -53,10 +50,8 @@ class LibroService {
         return true
     }
 
-
-
-    fun getLibros(categoria:String?,autor:String?): List<Libro> {
-        val libros = when {
+    fun getLibros(categoria: String?, autor: String?): List<Libro> {
+        return when {
             categoria != null && autor != null ->
                 libroRepository.buscarPorCategoriaOAutorSimilar(categoria, autor)
             categoria != null ->
@@ -66,7 +61,6 @@ class LibroService {
             else ->
                 libroRepository.findAll()
         }
-        return libros
     }
 
     fun buscarLibros(query: String?): List<Libro> {
@@ -76,7 +70,4 @@ class LibroService {
             emptyList()
         }
     }
-
-
-
 }
