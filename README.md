@@ -1,8 +1,19 @@
-# README - Gestión de Libros, Usuarios y Compras
+# README - App LeafRead
 
 ## Descripción de la Aplicación
 
 Esta aplicación es un sistema backend desarrollado en Kotlin con Spring Boot, que permite gestionar usuarios, libros, compras, avatares y valoraciones. El sistema contempla roles diferenciados para usuarios y administradores, control de stock, y funcionalidades de compra con integración de pagos.
+
+---
+
+## Documentación Swagger
+
+La documentación de la API fue implementada utilizando **Springdoc OpenAPI** con Swagger UI.
+
+Puedes acceder a la documentación interactiva aquí:
+🔗 [Swagger UI](https://api-tfg.onrender.com/swagger-ui/index.html#/)
+
+Disponible solo cuando Render está en funcionamiento.!!
 
 ---
 
@@ -182,5 +193,13 @@ Esta aplicación es un sistema backend desarrollado en Kotlin con Spring Boot, q
 
 ## Muestra de los TestPasados
 
-![Test Pasados Usuario](src/main/kotlin/com/es/aplicacion/util/imagenes/testUsuario.png)
+![Test Pasados Usuario](src/main/resources/imagenes/testUsuario.png)
+
+![Test Pasados Libro](src/main/resources/imagenes/testLibro.png)
+
+![Test Pasados Compra](src/main/resources/imagenes/testCompra.png)
+
+![Test Pasados Valoraciones](src/main/resources/imagenes/testValoraciones.png)
+
+![Test Pasados Avatares](src/main/resources/imagenes/testAvatares.png)
 
