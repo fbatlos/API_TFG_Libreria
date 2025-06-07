@@ -40,6 +40,11 @@ class SecurityConfig {
                 .requestMatchers("/usuarios/login").permitAll()
                 .requestMatchers("/usuarios/register").permitAll()
                 .requestMatchers("/libros").permitAll()
+                .requestMatchers(
+                    "/webjars/rapidoc/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**"
+                ).permitAll()
                 .requestMatchers(HttpMethod.GET,"/valoracion/{libro_id}").permitAll()
                 .requestMatchers(HttpMethod.POST,"/libros/admin/libros").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT,"/libros/admin/libros/{id}").hasRole("ADMIN")
