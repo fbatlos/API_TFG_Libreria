@@ -1,5 +1,6 @@
 ﻿package com.es.aplicacion.valoracion
 
+import com.es.aplicacion.dto.LibroDTO
 import com.es.aplicacion.error.exception.BadRequest
 import com.es.aplicacion.error.exception.Conflict
 import com.es.aplicacion.error.exception.NotFound
@@ -97,10 +98,12 @@ class ValoracionServiceTest {
 
     @Test
     fun `addValoracion exitoso`() {
+        // Añadimos un libro a la cesta simulando que ha sido comprado
+        val itemCompra = ItemCompra(LibroDTO(libroMock._id,libroId,9.99,"EUR"), cantidad = 1)
+        usuarioMock.cesta.add(itemCompra)
         whenever(usuarioRepository.findByUsername(usuarioName)).thenReturn(Optional.of(usuarioMock))
         whenever(libroRepository.findById(libroId)).thenReturn(Optional.of(libroMock))
         whenever(valoracionRepository.findByLibroidAndUsuarioName(libroId, usuarioName)).thenReturn(Optional.empty())
-
 
         val msg = valoracionService.addValoracion(valoracionMock)
 
@@ -108,6 +111,7 @@ class ValoracionServiceTest {
         verify(valoracionRepository).save(valoracionMock)
         verify(libroRepository).save(libroMock)
     }
+
 
     @Test
     fun `addValoracion lanza BadRequest si usuario no existe`() {
