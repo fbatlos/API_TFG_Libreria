@@ -32,6 +32,6 @@ data class Usuario(
     @Schema(description = "Lista de items en la cesta de compra")
     var cesta: MutableList<ItemCompra> = mutableListOf(),
 
-    @Schema(description = "ID del avatar del usuario", example = "68402c80be43b505fe8a2c78", nullable = true)
-    var avatar: String? = "68402c80be43b505fe8a2c78"
+    @Schema(description = "ID del avatar del usuario", example = "6840915c0ebc1f1cd83c4be3", nullable = true)
+    var avatar: String? = "6840915c0ebc1f1cd83c4be3"
 )
