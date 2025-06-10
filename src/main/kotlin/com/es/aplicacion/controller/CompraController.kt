@@ -74,7 +74,7 @@ class CompraController{
         description = "Devuelve todas las compras registradas en el sistema. Solo para administradores"
     )
     @GetMapping("/admin/tickets")
-    fun obtenerAllCompras(): MutableList<Compra> {
+    fun obtenerAllCompras(authentication: Authentication): MutableList<Compra> {
         val compras = compraService.obtenerAllCompras()
         return compras
     }
