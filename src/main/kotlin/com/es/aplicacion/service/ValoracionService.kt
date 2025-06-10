@@ -44,6 +44,10 @@ class ValoracionService(
             it.items.map { it.libro._id }.contains(valoracion.libroid)
         }
 
+        if (compra.isEmpty()){
+            throw BadRequest("Tienes que comprar el libro para comentar.")
+        }
+
         if (valoracion.valoracion < 0 || valoracion.comentario.isEmpty()) {
             throw BadRequest("Un valor no es válido.")
         }
