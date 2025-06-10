@@ -74,9 +74,7 @@ class UsuarioService(
                 username = usuarioInsertadoDTO.username,
                 password = passwordEncoder.encode(usuarioInsertadoDTO.password),
                 email = usuarioInsertadoDTO.email,
-                roles = usuarioInsertadoDTO.rol,
-                librosfav = mutableListOf(),
-                avatar = "68402c80be43b505fe8a2c78"
+                roles = usuarioInsertadoDTO.rol
             )
         )
 
