@@ -59,8 +59,5 @@ class CompraService(
             }
             libroRepository.save(libro)
         }
-
-        val compraGuardada = compra.copy(usuarioName = usuario.username)
-        compraRepository.save(compraGuardada)
     }
 }
