@@ -8,6 +8,7 @@ data class Ticket(
     @BsonId
     val _id : String? = null,
     val userName: String,
+    val email: String,
     var titulo:String,
     var cuerpo:String
 )
