@@ -16,6 +16,9 @@ class LibroService(
 ) {
 
     fun addLibro(libro: Libro): Boolean {
+        if(libro.isbn13.isNullOrBlank()){
+            throw BadRequest("El isbn del libro no puede ser nulo.")
+        }
         if (libroRepository.findByIsbn13(libro.isbn13!!).isPresent) {
             throw Conflict("El libro ya existe.")
         }
