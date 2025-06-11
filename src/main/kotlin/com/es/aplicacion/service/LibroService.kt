@@ -40,6 +40,7 @@ class LibroService(
         libroExistente.autores = libro.autores
         libroExistente.categorias = libro.categorias
         libroExistente.moneda = libro.moneda
+        libroExistente.stock = libro.stock
 
         libroRepository.save(libroExistente)
 
