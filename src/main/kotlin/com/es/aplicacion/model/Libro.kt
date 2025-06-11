@@ -27,7 +27,7 @@ data class Libro(
     var precio: Double? = null,
 
     @Schema(description = "Moneda en la que está el precio", example = "EUR")
-    var moneda: String? = null,
+    var moneda: String? = "EUR",
 
     @Schema(description = "URL o path de la imagen de portada", example = "https://ejemplo.com/portada.jpg")
     var imagen: String? = null,
