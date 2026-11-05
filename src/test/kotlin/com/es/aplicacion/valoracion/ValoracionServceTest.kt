@@ -73,6 +73,14 @@ class ValoracionServiceTest {
         comentario = "Excelente"
     )
 
+    // A purchase that contains the book, required to be allowed to review it
+    val compraConLibro = Compra(
+        usuarioName = usuarioName,
+        items = listOf(ItemCompra(LibroDTO(libroId, "Libro", 9.99, "EUR"), cantidad = 1)),
+        fechaCompra = "2025-01-01",
+        direccion = Direccion("Calle", "1", "Huelva", "Huelva")
+    )
+
     @Test
     fun `gatValoraciones retorna lista si libro existe`() {
         whenever(libroRepository.findById(libroId)).thenReturn(Optional.of(libroMock))
@@ -98,11 +106,9 @@ class ValoracionServiceTest {
 
     @Test
     fun `addValoracion exitoso`() {
-        // Añadimos un libro a la cesta simulando que ha sido comprado
-        val itemCompra = ItemCompra(LibroDTO(libroMock._id,libroId,9.99,"EUR"), cantidad = 1)
-        usuarioMock.cesta.add(itemCompra)
         whenever(usuarioRepository.findByUsername(usuarioName)).thenReturn(Optional.of(usuarioMock))
         whenever(libroRepository.findById(libroId)).thenReturn(Optional.of(libroMock))
+        whenever(compraRepository.findByUsuarioName(usuarioName)).thenReturn(listOf(compraConLibro))
         whenever(valoracionRepository.findByLibroidAndUsuarioName(libroId, usuarioName)).thenReturn(Optional.empty())
 
         val msg = valoracionService.addValoracion(valoracionMock)
@@ -141,6 +147,7 @@ class ValoracionServiceTest {
         val invalido = valoracionMock.copy(valoracion = -1)
         whenever(usuarioRepository.findByUsername(usuarioName)).thenReturn(Optional.of(usuarioMock))
         whenever(libroRepository.findById(libroId)).thenReturn(Optional.of(libroMock))
+        whenever(compraRepository.findByUsuarioName(usuarioName)).thenReturn(listOf(compraConLibro))
 
         val ex = assertThrows<BadRequest> {
             valoracionService.addValoracion(invalido)
@@ -158,7 +165,7 @@ class ValoracionServiceTest {
     fun `addValoracion lanza Conflict si ya valorado`() {
         whenever(usuarioRepository.findByUsername(usuarioName)).thenReturn(Optional.of(usuarioMock))
         whenever(libroRepository.findById(libroId)).thenReturn(Optional.of(libroMock))
-        whenever(compraRepository.findByUsuarioName(usuarioName)).thenReturn(emptyList())
+        whenever(compraRepository.findByUsuarioName(usuarioName)).thenReturn(listOf(compraConLibro))
         whenever(valoracionRepository.findByLibroidAndUsuarioName(libroId, usuarioName)).thenReturn(Optional.of(valoracionMock))
 
         val ex = assertThrows<Conflict> {

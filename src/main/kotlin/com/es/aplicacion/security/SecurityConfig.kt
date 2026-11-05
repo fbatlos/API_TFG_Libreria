@@ -46,12 +46,12 @@ class SecurityConfig {
                     "/swagger-ui/**"
                 ).permitAll()
                 .requestMatchers(HttpMethod.GET,"/valoracion/{libro_id}").permitAll()
-                .requestMatchers(HttpMethod.POST,"/libros/admin/libros").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST,"/libros/admin/libro").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT,"/libros/admin/libros/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE,"/libros/admin/libros/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/compra/admin/tickets").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET,"/ticket/admin/tickets").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE,"/admin/ticket/{idTicket}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/ticket/admin/ticket/{idTicket}").hasRole("ADMIN")
                 .anyRequest().authenticated()
             } // Los recursos protegidos y publicos
             .oauth2ResourceServer { oauth2 -> oauth2.jwt(Customizer.withDefaults()) }
