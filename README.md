@@ -1,207 +1,126 @@
-# README - App LeafRead
+# LeafRead API
 
-## Descripción de la Aplicación
+API REST de una librería online, hecha con **Kotlin y Spring Boot**. Gestiona usuarios, catálogo, carrito, compras con pago por Stripe, valoraciones y tickets de soporte. Es el backend de la app [KotlinLibreriaKMP](https://github.com/fbatlos/KotlinLibreriaKMP) (Android y escritorio).
 
-Esta aplicación es un sistema backend desarrollado en Kotlin con Spring Boot, que permite gestionar usuarios, libros, compras, avatares y valoraciones. El sistema contempla roles diferenciados para usuarios y administradores, control de stock, y funcionalidades de compra con integración de pagos.
+Proyecto final de ciclo (TFG) de Francisco José Batista de los Santos.
 
----
+![Swagger UI](src/main/resources/imagenes/demostracionSwagger.png)
 
-## Documentación Swagger
+**Documentación interactiva:** [Swagger UI en Render](https://api-tfg.onrender.com/swagger-ui/index.html#/). El servicio está en un plan gratuito, así que la primera petición puede tardar en despertar.
 
-La documentación de la API fue implementada utilizando **Springdoc OpenAPI** con Swagger UI.
+## Qué hace
 
-Puedes acceder a la documentación interactiva aquí:
-🔗 [Swagger UI](https://api-tfg.onrender.com/swagger-ui/index.html#/)
+- **Usuarios:** registro y login con JWT, direcciones, favoritos, cesta y avatar. Roles `USER` y `ADMIN`.
+- **Libros:** listado público con filtros, búsqueda por texto y CRUD solo para administradores. Control de stock.
+- **Compras:** sesión de pago con Stripe, comprobación del estado, tickets de compra y descuento automático de stock.
+- **Valoraciones:** puntuación con comentario. Solo puede valorar quien compró el libro, y una vez por libro.
+- **Soporte:** tickets de duda entre usuario y administrador.
 
-Disponible solo cuando Render está en funcionamiento.!!
+## Stack
 
-![Demostración Swagger](src/main/resources/imagenes/demostracionSwagger.png)
+| Capa | Tecnología |
+|---|---|
+| Lenguaje | Kotlin 1.9, Java 17 |
+| Framework | Spring Boot 3.4 |
+| Base de datos | MongoDB |
+| Seguridad | Spring Security, OAuth2 Resource Server, JWT firmado con RSA |
+| Pagos | Stripe |
+| Documentación | springdoc OpenAPI y Swagger UI |
+| Pruebas | JUnit 5 y Mockito (55 tests) |
+| Despliegue | Docker y Render |
 
----
+## Arquitectura
 
-## Modelos principales
+Capas clásicas, con una carpeta por responsabilidad en `src/main/kotlin/com/es/aplicacion`:
 
-- **Usuario**: almacena datos del usuario, incluyendo roles, direcciones, lista de libros favoritos, cesta de compra y avatar.  
-- **Libro**: representa libros con información detallada como título, autores, descripción, precio, categorías, stock y valoraciones.  
-- **Compra**: contiene información sobre las compras realizadas, incluyendo items (libros + cantidad), fecha y dirección de entrega.  
-- **Avatar**: representa la imagen del usuario.  
-- **Valoración**: guarda la valoración y comentario que un usuario deja sobre un libro.  
+```
+controller   Endpoints REST
+service      Reglas de negocio y validaciones
+repository   Acceso a MongoDB
+model        Documentos (Usuario, Libro, Compra, Valoracion, Ticket...)
+dto          Objetos de entrada y salida
+security     Configuración de Spring Security y claves RSA
+error        Excepciones propias y manejador global de errores
+config       OpenAPI y Stripe
+```
 
----
+## Endpoints
 
-## Estructura general y colecciones en BD (MongoDB)
+| Método | Ruta | Descripción | Acceso |
+|---|---|---|---|
+| POST | `/usuarios/register` | Registro | Público |
+| POST | `/usuarios/login` | Login, devuelve el token JWT | Público |
+| GET | `/usuarios/usuario` | Datos del usuario autenticado | Usuario |
+| PUT, DELETE | `/usuarios/direccion` | Gestión de direcciones | Usuario |
+| GET, POST, DELETE | `/usuarios/favoritos` | Libros favoritos | Usuario |
+| GET, POST, PUT, DELETE | `/usuarios/cesta` | Cesta de la compra | Usuario |
+| PUT | `/usuarios/avatar` | Cambiar avatar | Usuario |
+| GET | `/libros` | Listar libros con filtros | Público |
+| GET | `/libros/buscar` | Búsqueda por texto | Usuario |
+| POST | `/libros/admin/libro` | Crear libro | Admin |
+| PUT, DELETE | `/libros/admin/libros/{id}` | Editar y borrar libro | Admin |
+| POST | `/compra/checkout` | Crear sesión de pago | Usuario |
+| GET | `/compra/estado/{sessionId}` | Estado del pago | Usuario |
+| POST | `/compra/ticket` | Registrar ticket de compra | Usuario |
+| GET | `/compra/tickets` | Tickets del usuario | Usuario |
+| GET | `/compra/admin/tickets` | Todos los tickets | Admin |
+| POST | `/compra/actualizar-stock` | Actualizar stock tras la compra | Usuario |
+| GET | `/valoracion/{libro_id}` | Valoraciones de un libro | Público |
+| POST | `/valoracion/add` | Valorar un libro comprado | Usuario |
+| GET | `/valoracion/mis-valoraciones` | Mis valoraciones | Usuario |
+| DELETE | `/valoracion/eliminar/{id}` | Borrar valoración | Usuario |
+| GET | `/avatar/allAvatares` | Listar avatares | Usuario |
+| GET | `/avatar/miAvatar/{id}` | Obtener avatar | Usuario |
+| POST | `/ticket/enviar` | Enviar ticket de duda | Usuario |
+| GET | `/ticket/admin/tickets` | Ver tickets de duda | Admin |
+| DELETE | `/ticket/admin/ticket/{id}` | Borrar ticket de duda | Admin |
 
-### Usuario
+Los errores devuelven un JSON uniforme con los códigos `400`, `401`, `403`, `404` y `409` según el caso.
 
-- `_id`: String  
-- `username`: String  
-- `password`: String (hashed)  
-- `email`: String  
-- `roles`: String? (default "USER")  
-- `direccion`: List<Direccion>  
-- `librosfav`: List<String> (IDs de libros favoritos)  
-- `cesta`: List<ItemCompra>  
-- `avatar`: String (ID de avatar)  
+## Cómo ejecutarlo
 
-### Libro
+Requisitos: JDK 17, una instancia de MongoDB y una clave de prueba de Stripe.
 
-- `_id`: String  
-- `titulo`: String  
-- `autores`: List<String>  
-- `descripcion`: String  
-- `precio`: Double  
-- `moneda`: String  
-- `imagen`: String (URL o base64)  
-- `enlaceEbook`: String  
-- `isbn13`: String  
-- `categorias`: List<String>  
-- `valoracionMedia`: Double  
-- `stock`: Stock (tipo y número)  
+**1. Claves RSA para firmar los JWT.** Desde `src/main/resources/certs`:
 
-### Compra
+```bash
+openssl genrsa -out keypair.pem 2048
+openssl rsa -in keypair.pem -pubout -out public.pem
+openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in keypair.pem -out private.pem
+```
 
-- `usuarioName`: String  
-- `items`: List<ItemCompra>  
-- `fechaCompra`: String (fecha en formato ISO)  
-- `direccion`: Direccion (calle, número, municipio, provincia)  
+**2. Variables de entorno.** Copia `.env.example` a `src/main/resources/.env.properties` y rellena tus valores. Ese archivo y los `.pem` están en `.gitignore`.
 
-### Avatar
+**3. Arranque.**
 
-- `_id`: String  
-- `filename`: String  
-- `mimeType`: String  
-- `data`: ByteArray (imagen)  
+```bash
+./gradlew bootRun
+```
 
-### Valoración
+La API queda en `http://localhost:8080` y Swagger en `/swagger-ui/index.html`.
 
-- `_id`: String  
-- `libroid`: String  
-- `usuarioName`: String  
-- `valoracion`: Int (ej. 1 a 5)  
-- `comentario`: String  
-- `fecha`: LocalDateTime  
+**Docker.** Genera el WAR con `./gradlew bootWar` y construye la imagen con el `dockerfile` incluido.
 
----
+## Pruebas
 
-## Funcionalidades clave
+```bash
+./gradlew test
+```
 
-### Usuarios
+55 pruebas unitarias sobre los servicios de usuarios, libros, compras, valoraciones y avatares.
 
-- Registro y login con validación de datos.  
-- Gestión de direcciones y avatar.  
-- Gestión de libros favoritos y cesta de compra.  
+![Tests de usuario](src/main/resources/imagenes/testUsuario.png)
+![Tests de compra](src/main/resources/imagenes/testCompra.png)
 
-### Libros
+## Mejoras previstas
 
-- CRUD para libros (solo admin para creación, actualización y borrado).  
-- Consulta pública de libros con filtros por categoría y autor.  
-- Búsqueda de libros por texto libre.  
-- Gestión de stock y valoraciones.  
+- Pruebas de integración de los controladores, en especial de las reglas de acceso por rol.
+- GitHub Actions para compilar y lanzar los tests en cada PR.
+- Medición de cobertura.
+- Perfiles de configuración por entorno.
+- Paginación en el listado de libros.
 
-### Compras
+## Autor
 
-- Creación de sesiones de pago (checkout).  
-- Verificación del estado de pago.  
-- Registro de tickets de compra.  
-- Consulta de tickets (usuario y admin).  
-- Actualización automática de stock tras compra.  
-
-### Avatares
-
-- Consultar avatar por ID.  
-- Listar todos los avatares disponibles.  
-
-### Valoraciones
-
-- Usuarios pueden valorar libros con puntuación y comentario.
-- Usuarios pueden comentar si han comprado el libro.
-- Registro de fecha automática.  
-
----
-
-## Seguridad
-
-- JWT para autenticación.  
-- Roles `USER` y `ADMIN` para control de acceso.  
-- Endpoints protegidos según rol.  
-- Validación de datos en DTOs y control de accesos para evitar modificación o consulta indebida.  
-
----
-
-## Endpoints Principales
-
-| Método  | Ruta                         | Descripción                              | Roles        |
-|---------|------------------------------|----------------------------------------|--------------|
-| POST    | `/usuarios/login`             | Login de usuario, devuelve token JWT   | Público      |
-| POST    | `/usuarios/register`          | Registro de usuario                     | Público      |
-| GET     | `/libros`                    | Listar libros con filtros               | Público      |
-| POST    | `/admin/libro`               | Crear libro                            | Admin        |
-| PUT     | `/admin/libros/{id}`         | Actualizar libro                       | Admin        |
-| DELETE  | `/admin/libros/{id}`         | Borrar libro                          | Admin        |
-| POST    | `/compra/checkout`           | Crear sesión de pago                   | Usuario      |
-| GET     | `/compra/estado/{sessionId}` | Consultar estado del pago              | Usuario      |
-| POST    | `/compra/ticket`             | Registrar ticket de compra             | Usuario      |
-| GET     | `/compra/tickets`            | Obtener tickets de usuario             | Usuario      |
-| GET     | `/compra/admin/tickets`      | Obtener todos los tickets              | Admin        |
-| POST    | `/compra/actualizar-stock`   | Actualizar stock tras compra           | Usuario      |
-| GET     | `/avatar/miAvatar/{idAvatar}`| Obtener avatar por ID                  | Usuario      |
-| GET     | `/avatar/allAvatares`        | Listar todos los avatares              | Usuario      |
-
----
-
-## Validaciones y reglas de negocio
-
-- Usuario: único username y email, contraseña con mínimo 5 caracteres y repetición correcta.  
-- Libro: título obligatorio, stock debe ser controlado y actualizado tras compra.  
-- Compra: dirección válida, cantidad > 0 dentro del stock de cada libro y obviamente la compra no puede estár vacía.  
-- Valoración: rango de valoraciones entre 1 y 5, tiene que haber comprado el libro para que pueda dar su valoración y no puedes valorar 2 veces el mismo libro.  
-- Avatar: imagen válida en base64 o archivo.  
-
----
-
-## Manejo de errores (códigos HTTP)
-
-| Código | Significado                     |
-|--------|--------------------------------|
-| 200    | OK                             |
-| 201    | Created                        |
-| 204    | No Content                     |
-| 400    | Bad Request (validación)       |
-| 401    | Unauthorized (token inválido)  |
-| 403    | Forbidden (sin permiso)        |
-| 404    | Not Found                      |
-| 409    | Conflict (usuario o dato repetido) |
-| 500    | Internal Server Error          |
-
----
-
-## Ejecución y pruebas
-
-- Se recomienda usar Postman o Insomnia para probar los endpoints.  
-- Pruebas de login, registro, creación y gestión de libros, compras y valoraciones.  
-- Se puede desplegar en Render o cualquier otro hosting de backend.  
-- Video demostraciones disponibles para facilitar la comprensión.  
-
----
-
-## Recursos adicionales
-
-- DTOs bien definidos para control y seguridad.  
-- Integración con servicios de pago externos.  
-- Seguridad con Spring Security y JWT.  
-- Manejo de roles y permisos.  
-
----
-
-## Muestra de los TestPasados
-
-![Test Pasados Usuario](src/main/resources/imagenes/testUsuario.png)
-
-![Test Pasados Libro](src/main/resources/imagenes/testLibro.png)
-
-![Test Pasados Compra](src/main/resources/imagenes/testCompra.png)
-
-![Test Pasados Valoraciones](src/main/resources/imagenes/testValoraciones.png)
-
-![Test Pasados Avatares](src/main/resources/imagenes/testAvatares.png)
-
+**Francisco José Batista de los Santos**: desarrollador backend y full-stack junior.
+GitHub: [@fbatlos](https://github.com/fbatlos)
